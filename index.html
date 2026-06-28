@@ -117,7 +117,8 @@
             pointer-events: none;
         }
 
-        .input-wrapper input {
+        .input-wrapper input,
+        .input-wrapper select {
             width: 100%;
             padding: 16px 18px;
             font-size: 16px;
@@ -127,6 +128,15 @@
             border: none;
             outline: none;
             font-family: inherit;
+        }
+
+        .input-wrapper select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231a3a5c' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 18px center;
+            background-size: 12px;
+            cursor: pointer;
         }
 
         .input-wrapper input::placeholder {
@@ -419,7 +429,8 @@
             .header h1 {
                 font-size: 24px;
             }
-            .input-wrapper input {
+            .input-wrapper input,
+            .input-wrapper select {
                 font-size: 15px;
                 padding: 14px 14px;
             }
@@ -447,7 +458,8 @@
             .input-wrapper .currency {
                 font-size: 13px;
             }
-            .input-wrapper input {
+            .input-wrapper input,
+            .input-wrapper select {
                 font-size: 14px;
                 padding: 12px 10px;
             }
@@ -505,6 +517,21 @@
                 </div>
             </div>
 
+            <!-- NEW: Provider Selection -->
+            <div class="form-group">
+                <label for="providerSelect">
+                    <i class="fas fa-wifi"></i> Payment Network
+                </label>
+                <div class="input-wrapper">
+                    <select id="providerSelect">
+                        <option value="m-pesa">M-Pesa</option>
+                        <option value="airtel">Airtel Money</option>
+                        <!-- Add more providers as needed -->
+                        <!-- e.g., <option value="t-kash">T-Kash</option> -->
+                    </select>
+                </div>
+            </div>
+
             <button type="submit" class="btn-submit" id="submitBtn">
                 <span class="btn-icon"><i class="fas fa-paper-plane"></i></span>
                 <span class="btn-text">Pay Now</span>
@@ -540,6 +567,10 @@
                 <span class="label"><i class="fas fa-coins" style="margin-right:8px;"></i>Amount</span>
                 <span class="value amount" id="modalAmount">—</span>
             </div>
+            <div class="detail-row">
+                <span class="label"><i class="fas fa-wifi" style="margin-right:8px;"></i>Network</span>
+                <span class="value" id="modalProvider">—</span>
+            </div>
 
             <div class="modal-actions">
                 <button class="btn-cancel" id="modalCancel">Cancel</button>
@@ -564,6 +595,7 @@
             const form = document.getElementById('paymentForm');
             const phoneInput = document.getElementById('phoneInput');
             const amountInput = document.getElementById('amountInput');
+            const providerSelect = document.getElementById('providerSelect');
             const submitBtn = document.getElementById('submitBtn');
             const statusEl = document.getElementById('statusMessage');
             const statusText = document.getElementById('statusText');
@@ -571,6 +603,7 @@
             const modalOverlay = document.getElementById('confirmModal');
             const modalPhone = document.getElementById('modalPhone');
             const modalAmount = document.getElementById('modalAmount');
+            const modalProvider = document.getElementById('modalProvider');
             const modalCancel = document.getElementById('modalCancel');
             const modalConfirm = document.getElementById('modalConfirm');
 
@@ -586,6 +619,15 @@
             function formatCurrency(amount) {
                 const num = parseFloat(amount);
                 return isNaN(num) || num < 0 ? '0.00' : num.toFixed(2);
+            }
+
+            function getProviderLabel(value) {
+                const map = {
+                    'm-pesa': 'M-Pesa',
+                    'airtel': 'Airtel Money',
+                    // add more as needed
+                };
+                return map[value] || value;
             }
 
             function showStatus(message, type) {
@@ -627,6 +669,7 @@
 
                 const rawPhone = phoneInput.value.trim();
                 const rawAmount = amountInput.value.trim();
+                const provider = providerSelect.value;
 
                 if (!rawPhone || !validatePhone(rawPhone)) {
                     showStatus('Please enter a valid Safaricom phone number (e.g., 712345678).', 'error');
@@ -641,12 +684,15 @@
 
                 const phoneInfo = formatPhone(rawPhone);
                 const formattedAmount = formatCurrency(rawAmount);
+                const providerLabel = getProviderLabel(provider);
 
-                // Show modal
+                // Show modal with provider
                 modalPhone.textContent = phoneInfo.display;
                 modalAmount.textContent = 'KES ' + formattedAmount;
+                modalProvider.textContent = providerLabel;
                 modalConfirm._phoneRaw = phoneInfo.raw;
                 modalConfirm._amount = formattedAmount;
+                modalConfirm._provider = provider; // store the raw value
                 modalOverlay.classList.add('active');
             }
 
@@ -654,6 +700,7 @@
             async function onModalConfirm() {
                 const phone = modalConfirm._phoneRaw;
                 const amount = modalConfirm._amount;
+                const provider = modalConfirm._provider;
 
                 modalOverlay.classList.remove('active');
                 setLoading(true);
@@ -661,7 +708,7 @@
                 showStatus('Initiating payment…', 'info');
 
                 try {
-                    const payload = { phone, amount };
+                    const payload = { phone, amount, provider };
                     console.log('📦 Sending payload:', payload);
 
                     const response = await fetch(INITIATE_URL, {
@@ -690,6 +737,8 @@
                     );
                     phoneInput.value = '';
                     amountInput.value = '';
+                    // reset provider to default
+                    providerSelect.value = 'm-pesa';
                 } catch (err) {
                     console.error('❌ Payment error:', err);
                     showStatus(`❌ ${err.message || 'Payment failed. Please try again.'}`, 'error');
