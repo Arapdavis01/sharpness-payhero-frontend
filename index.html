@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Eagle Master – Pay with PayHero</title>
 
-    <!-- Google Fonts for elegant typography -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
@@ -17,13 +17,12 @@
     <script src="https://payhero.co.ke"></script>
 
     <style>
-        /* ---------- RESET & BASE ---------- */
+        /* ---------- Same glass-morphism styles (unchanged) ---------- */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             font-family: 'Inter', 'Segoe UI', sans-serif;
             min-height: 100vh;
@@ -36,7 +35,6 @@
             position: relative;
             overflow-x: hidden;
         }
-
         body::before {
             content: '';
             position: fixed;
@@ -49,8 +47,6 @@
             pointer-events: none;
             z-index: 0;
         }
-
-        /* ---------- CARD (Glass-morphism) ---------- */
         .card {
             position: relative;
             z-index: 1;
@@ -65,18 +61,14 @@
             padding: 48px 40px;
             transition: transform 0.3s ease, box-shadow 0.4s ease;
         }
-
         .card:hover {
             transform: translateY(-4px);
             box-shadow: 0 40px 90px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 215, 0, 0.1) inset;
         }
-
-        /* ---------- HEADER ---------- */
         .header {
             text-align: center;
             margin-bottom: 40px;
         }
-
         .header .logo-icon {
             display: inline-flex;
             align-items: center;
@@ -91,12 +83,10 @@
             box-shadow: 0 12px 30px rgba(246, 176, 38, 0.3);
             transition: transform 0.4s ease, box-shadow 0.4s ease;
         }
-
         .header .logo-icon:hover {
             transform: scale(1.05) rotate(-5deg);
             box-shadow: 0 16px 40px rgba(246, 176, 38, 0.5);
         }
-
         .header h1 {
             font-size: 32px;
             font-weight: 700;
@@ -107,7 +97,6 @@
             color: transparent;
             text-shadow: 0 2px 10px rgba(246, 176, 38, 0.2);
         }
-
         .header p {
             color: rgba(255, 255, 255, 0.7);
             font-size: 15px;
@@ -115,12 +104,9 @@
             margin-top: 6px;
             letter-spacing: 0.3px;
         }
-
-        /* ---------- FORM ---------- */
         .form-group {
             margin-bottom: 24px;
         }
-
         .form-group label {
             display: block;
             font-size: 13px;
@@ -130,14 +116,12 @@
             letter-spacing: 0.5px;
             text-transform: uppercase;
         }
-
         .form-group label i {
             margin-right: 10px;
             color: #f6b026;
             width: 20px;
             text-align: center;
         }
-
         .input-wrapper {
             position: relative;
             display: flex;
@@ -147,13 +131,11 @@
             border: 1px solid rgba(255, 255, 255, 0.08);
             transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
         }
-
         .input-wrapper:focus-within {
             border-color: #f6b026;
             background: rgba(255, 255, 255, 0.10);
             box-shadow: 0 0 0 4px rgba(246, 176, 38, 0.15);
         }
-
         .input-wrapper .prefix {
             padding: 0 0 0 18px;
             font-weight: 600;
@@ -164,7 +146,6 @@
             border: none;
             pointer-events: none;
         }
-
         .input-wrapper input {
             width: 100%;
             padding: 16px 18px;
@@ -176,22 +157,18 @@
             outline: none;
             font-family: inherit;
         }
-
         .input-wrapper input::placeholder {
             color: rgba(255, 255, 255, 0.35);
             font-weight: 400;
         }
-
         .input-wrapper input[type="number"]::-webkit-inner-spin-button,
         .input-wrapper input[type="number"]::-webkit-outer-spin-button {
             -webkit-appearance: none;
             margin: 0;
         }
-
         .input-wrapper input[type="number"] {
             -moz-appearance: textfield;
         }
-
         .input-wrapper .currency {
             padding: 0 18px 0 0;
             font-weight: 700;
@@ -202,14 +179,13 @@
             pointer-events: none;
         }
 
-        /* ---------- PAYHERO BUTTON (styled to match our theme) ---------- */
+        /* PayHero Button + fallback button */
         #payhero-button-container {
             margin-top: 12px;
             width: 100%;
         }
-
-        /* Override PayHero’s default button styles */
-        #payhero-button-container .payhero-button {
+        #payhero-button-container .payhero-button,
+        #fallback-button {
             width: 100% !important;
             border-radius: 16px !important;
             font-family: 'Inter', sans-serif !important;
@@ -229,9 +205,10 @@
             cursor: pointer !important;
             position: relative;
             overflow: hidden;
+            text-decoration: none;
         }
-
-        #payhero-button-container .payhero-button::before {
+        #payhero-button-container .payhero-button::before,
+        #fallback-button::before {
             content: '';
             position: absolute;
             inset: 0;
@@ -241,22 +218,22 @@
             transition: transform 0.6s ease;
             z-index: 0;
         }
-
-        #payhero-button-container .payhero-button:hover::before {
+        #payhero-button-container .payhero-button:hover::before,
+        #fallback-button:hover::before {
             transform: translateX(100%);
         }
-
-        #payhero-button-container .payhero-button:hover {
+        #payhero-button-container .payhero-button:hover,
+        #fallback-button:hover {
             transform: translateY(-2px) !important;
             box-shadow: 0 12px 40px rgba(246, 176, 38, 0.45) !important;
         }
-
-        #payhero-button-container .payhero-button:active {
+        #payhero-button-container .payhero-button:active,
+        #fallback-button:active {
             transform: translateY(0px) !important;
             box-shadow: 0 4px 20px rgba(246, 176, 38, 0.25) !important;
         }
-
-        #payhero-button-container .payhero-button .payhero-button-text {
+        #payhero-button-container .payhero-button .payhero-button-text,
+        #fallback-button span {
             position: relative;
             z-index: 1;
             display: flex !important;
@@ -264,7 +241,7 @@
             gap: 12px !important;
         }
 
-        /* ---------- STATUS ---------- */
+        /* Status */
         .status {
             margin-top: 24px;
             padding: 14px 18px;
@@ -278,35 +255,12 @@
             background: rgba(255, 255, 255, 0.06);
             backdrop-filter: blur(10px);
         }
+        .status.show { display: flex; }
+        .status.success { border-color: #4caf50; color: #b9f6ca; background: rgba(76, 175, 80, 0.15); }
+        .status.error { border-color: #ef5350; color: #ffcdd2; background: rgba(239, 83, 80, 0.15); }
+        .status.info { border-color: #42a5f5; color: #bbdefb; background: rgba(66, 165, 245, 0.15); }
+        .status i { font-size: 18px; flex-shrink: 0; }
 
-        .status.show {
-            display: flex;
-        }
-
-        .status.success {
-            border-color: #4caf50;
-            color: #b9f6ca;
-            background: rgba(76, 175, 80, 0.15);
-        }
-
-        .status.error {
-            border-color: #ef5350;
-            color: #ffcdd2;
-            background: rgba(239, 83, 80, 0.15);
-        }
-
-        .status.info {
-            border-color: #42a5f5;
-            color: #bbdefb;
-            background: rgba(66, 165, 245, 0.15);
-        }
-
-        .status i {
-            font-size: 18px;
-            flex-shrink: 0;
-        }
-
-        /* ---------- FOOTER ---------- */
         .footer-text {
             margin-top: 20px;
             font-size: 13px;
@@ -314,48 +268,21 @@
             text-align: center;
             letter-spacing: 0.3px;
         }
-        .footer-text i {
-            margin-right: 6px;
-            color: rgba(255, 255, 255, 0.25);
-        }
+        .footer-text i { margin-right: 6px; color: rgba(255, 255, 255, 0.25); }
 
-        /* ---------- RESPONSIVE ---------- */
         @media (max-width: 520px) {
-            .card {
-                padding: 32px 24px;
-                border-radius: 28px;
-            }
-            .header h1 {
-                font-size: 26px;
-            }
-            .header .logo-icon {
-                width: 64px;
-                height: 64px;
-                font-size: 32px;
-            }
-            .input-wrapper input {
-                font-size: 15px;
-                padding: 14px 16px;
-            }
-            #payhero-button-container .payhero-button {
-                font-size: 16px !important;
-                padding: 16px 20px !important;
-            }
+            .card { padding: 32px 24px; border-radius: 28px; }
+            .header h1 { font-size: 26px; }
+            .header .logo-icon { width: 64px; height: 64px; font-size: 32px; }
+            .input-wrapper input { font-size: 15px; padding: 14px 16px; }
+            #payhero-button-container .payhero-button,
+            #fallback-button { font-size: 16px !important; padding: 16px 20px !important; }
         }
-
         @media (max-width: 380px) {
-            .card {
-                padding: 24px 16px;
-                border-radius: 24px;
-            }
+            .card { padding: 24px 16px; border-radius: 24px; }
             .input-wrapper .prefix,
-            .input-wrapper .currency {
-                font-size: 13px;
-            }
-            .input-wrapper input {
-                font-size: 14px;
-                padding: 12px 14px;
-            }
+            .input-wrapper .currency { font-size: 13px; }
+            .input-wrapper input { font-size: 14px; padding: 12px 14px; }
         }
     </style>
 </head>
@@ -371,7 +298,6 @@
         </div>
 
         <form id="paymentForm" novalidate>
-            <!-- Phone (required for M‑Pesa/Airtel) -->
             <div class="form-group">
                 <label for="phoneInput">
                     <i class="fas fa-phone-alt"></i> Phone Number
@@ -389,7 +315,6 @@
                 </div>
             </div>
 
-            <!-- Amount -->
             <div class="form-group">
                 <label for="amountInput">
                     <i class="fas fa-coins"></i> Amount (KES)
@@ -408,7 +333,6 @@
                 </div>
             </div>
 
-            <!-- Customer Name (optional) -->
             <div class="form-group">
                 <label for="nameInput">
                     <i class="fas fa-user"></i> Full Name (optional)
@@ -423,7 +347,7 @@
                 </div>
             </div>
 
-            <!-- PayHero Button Container (rendered dynamically) -->
+            <!-- Dynamic button container -->
             <div id="payhero-button-container"></div>
         </form>
 
@@ -441,8 +365,8 @@
         (function() {
             'use strict';
 
-            // ---------- CONFIGURATION (updated with your credentials) ----------
-            const CHANNEL_ID = '9929';   // Your actual PayHero channel ID
+            // ---------- CONFIGURATION ----------
+            const CHANNEL_ID = '9929';
             const CALLBACK_URL = 'https://sharpness-payhero-backend.onrender.com/api/payments/callback';
             const SUCCESS_URL = window.location.origin + window.location.pathname + '?status=success';
             const FAIL_URL = window.location.origin + window.location.pathname + '?status=fail';
@@ -483,13 +407,31 @@
                 return 'EM-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
             }
 
-            // ---------- Render PayHero Button ----------
+            // ---------- Build Lipwa checkout URL (fallback) ----------
+            function buildLipwaUrl(amount, phone, name) {
+                const base = 'https://payherokenya.com';
+                const params = new URLSearchParams({
+                    channel_id: CHANNEL_ID,
+                    amount: parseFloat(amount).toFixed(2),
+                    phone: formatPhone(phone),
+                    name: name || 'Customer',
+                    reference: generateReference(),
+                    success_url: SUCCESS_URL,
+                    fail_url: FAIL_URL,
+                    callback_url: CALLBACK_URL,
+                });
+                return base + '?' + params.toString();
+            }
+
+            // ---------- Render PayHero Button (with fallback) ----------
             function renderPayHeroButton(amount, phone, name) {
-                // Clear previous button
+                // Clear container
                 buttonContainer.innerHTML = '';
 
+                // Check if PayHero SDK is available
                 if (typeof PayHero === 'undefined') {
-                    showStatus('PayHero SDK failed to load. Please refresh.', 'error');
+                    console.warn('PayHero SDK not loaded – using fallback link.');
+                    renderFallbackButton(amount, phone, name);
                     return;
                 }
 
@@ -505,27 +447,48 @@
                     callback_url: CALLBACK_URL,
                     success_url: SUCCESS_URL,
                     fail_url: FAIL_URL,
-                    // Custom styling
                     button_text: 'Pay Securely with Card / M‑Pesa',
                     button_color: '#f6b026',
                     button_text_color: '#0a1a2f',
                 };
 
                 try {
+                    console.log('Attempting to render PayHero button with config:', config);
                     PayHero.Button(config).render('#payhero-button-container');
 
-                    // Inject a custom icon into the button text after render
-                    const btn = document.querySelector('#payhero-button-container .payhero-button .payhero-button-text');
-                    if (btn) {
-                        btn.innerHTML = '<i class="fas fa-credit-card" style="margin-right:10px;"></i> ' + btn.textContent;
+                    // Check if button actually rendered
+                    const renderedBtn = document.querySelector('#payhero-button-container .payhero-button');
+                    if (!renderedBtn) {
+                        throw new Error('Button element not found after render');
+                    }
+
+                    // Customize button text with icon
+                    const btnText = renderedBtn.querySelector('.payhero-button-text');
+                    if (btnText) {
+                        btnText.innerHTML = '<i class="fas fa-credit-card" style="margin-right:10px;"></i> ' + btnText.textContent;
                     }
 
                     hideStatus();
                     showStatus('Click the button below to proceed to secure checkout.', 'info');
+                    console.log('PayHero button rendered successfully.');
                 } catch (error) {
-                    console.error('PayHero Button error:', error);
-                    showStatus('Failed to initialize payment button. Check console.', 'error');
+                    console.error('PayHero button error:', error);
+                    // Fallback to direct checkout link
+                    renderFallbackButton(amount, phone, name);
                 }
+            }
+
+            // ---------- Fallback: show a direct checkout link button ----------
+            function renderFallbackButton(amount, phone, name) {
+                const checkoutUrl = buildLipwaUrl(amount, phone, name);
+                console.log('Fallback checkout URL:', checkoutUrl);
+
+                buttonContainer.innerHTML = `
+                    <a href="${checkoutUrl}" id="fallback-button" target="_blank" rel="noopener noreferrer">
+                        <span><i class="fas fa-external-link-alt"></i> Proceed to Secure Checkout</span>
+                    </a>
+                `;
+                showStatus('Using fallback checkout – click the button below.', 'info');
             }
 
             // ---------- Form submission ----------
@@ -551,7 +514,7 @@
                     return;
                 }
 
-                // Render the PayHero button with the provided details
+                // Render the PayHero button (or fallback)
                 renderPayHeroButton(rawAmount, rawPhone, name);
             }
 
@@ -568,11 +531,9 @@
 
             if (statusParam === 'success' && refParam) {
                 showStatus(`✅ Payment successful! Reference: ${refParam}`, 'success');
-                // Optionally clear form
                 amountInput.value = '';
                 phoneInput.value = '';
                 nameInput.value = '';
-                // Remove the query parameters from URL without reload
                 window.history.replaceState({}, document.title, window.location.pathname);
             } else if (statusParam === 'fail') {
                 showStatus('❌ Payment failed or cancelled. Please try again.', 'error');
@@ -592,7 +553,7 @@
                 this.value = this.value.replace(/\D/g, '').slice(0, 15);
             });
 
-            // Show a hint if no button yet
+            // Initial hint
             if (!buttonContainer.children.length) {
                 showStatus('Enter amount and phone, then submit to continue.', 'info');
             }
