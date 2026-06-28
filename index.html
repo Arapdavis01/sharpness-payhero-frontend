@@ -555,7 +555,7 @@
             'use strict';
 
             // ----------------------------------------------------------------
-            //  ✅ CORRECT BACKEND URL – your Render backend
+            //  ✅ BACKEND URL – your Render backend
             // ----------------------------------------------------------------
             const API_BASE = 'https://sharpness-payhero-backend.onrender.com';
             const INITIATE_URL = API_BASE + '/api/payments/initiate';
@@ -662,7 +662,6 @@
 
                 try {
                     const payload = { phone, amount };
-                    // Log the payload for debugging
                     console.log('📦 Sending payload:', payload);
 
                     const response = await fetch(INITIATE_URL, {
@@ -681,7 +680,6 @@
                     }
 
                     if (!response.ok) {
-                        // Use the backend's error message if available
                         const errorMsg = data.message || `HTTP ${response.status}`;
                         throw new Error(errorMsg);
                     }
