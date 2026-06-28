@@ -13,11 +13,8 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-    <!-- PayHero Widget SDK -->
-    <script src="https://payhero.co.ke"></script>
-
     <style>
-        /* ---------- Same glass-morphism styles (unchanged) ---------- */
+        /* ---------- SAME BEAUTIFUL STYLES (unchanged) ---------- */
         * {
             margin: 0;
             padding: 0;
@@ -179,36 +176,31 @@
             pointer-events: none;
         }
 
-        /* PayHero Button + fallback button */
-        #payhero-button-container {
-            margin-top: 12px;
-            width: 100%;
-        }
-        #payhero-button-container .payhero-button,
-        #fallback-button {
-            width: 100% !important;
-            border-radius: 16px !important;
-            font-family: 'Inter', sans-serif !important;
-            font-weight: 700 !important;
-            font-size: 18px !important;
-            padding: 18px 24px !important;
-            background: linear-gradient(135deg, #f6b026, #d48b1c) !important;
-            color: #0a1a2f !important;
-            border: none !important;
-            box-shadow: 0 8px 30px rgba(246, 176, 38, 0.3) !important;
-            transition: all 0.3s ease !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            gap: 14px !important;
-            letter-spacing: 0.5px !important;
-            cursor: pointer !important;
+        /* ---------- BUTTON (no widget, just a form submit) ---------- */
+        .btn-submit {
             position: relative;
+            width: 100%;
+            padding: 18px 24px;
+            background: linear-gradient(135deg, #f6b026, #d48b1c);
+            color: #0a1a2f;
+            font-size: 18px;
+            font-weight: 700;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            margin-top: 12px;
+            box-shadow: 0 8px 30px rgba(246, 176, 38, 0.3);
+            letter-spacing: 0.5px;
             overflow: hidden;
-            text-decoration: none;
+            z-index: 1;
+            font-family: inherit;
         }
-        #payhero-button-container .payhero-button::before,
-        #fallback-button::before {
+        .btn-submit::before {
             content: '';
             position: absolute;
             inset: 0;
@@ -218,30 +210,23 @@
             transition: transform 0.6s ease;
             z-index: 0;
         }
-        #payhero-button-container .payhero-button:hover::before,
-        #fallback-button:hover::before {
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(246, 176, 38, 0.45);
+        }
+        .btn-submit:hover::before {
             transform: translateX(100%);
         }
-        #payhero-button-container .payhero-button:hover,
-        #fallback-button:hover {
-            transform: translateY(-2px) !important;
-            box-shadow: 0 12px 40px rgba(246, 176, 38, 0.45) !important;
+        .btn-submit:active {
+            transform: translateY(0px);
+            box-shadow: 0 4px 20px rgba(246, 176, 38, 0.25);
         }
-        #payhero-button-container .payhero-button:active,
-        #fallback-button:active {
-            transform: translateY(0px) !important;
-            box-shadow: 0 4px 20px rgba(246, 176, 38, 0.25) !important;
-        }
-        #payhero-button-container .payhero-button .payhero-button-text,
-        #fallback-button span {
+        .btn-submit .btn-icon,
+        .btn-submit .btn-text {
             position: relative;
             z-index: 1;
-            display: flex !important;
-            align-items: center !important;
-            gap: 12px !important;
         }
 
-        /* Status */
         .status {
             margin-top: 24px;
             padding: 14px 18px;
@@ -275,8 +260,7 @@
             .header h1 { font-size: 26px; }
             .header .logo-icon { width: 64px; height: 64px; font-size: 32px; }
             .input-wrapper input { font-size: 15px; padding: 14px 16px; }
-            #payhero-button-container .payhero-button,
-            #fallback-button { font-size: 16px !important; padding: 16px 20px !important; }
+            .btn-submit { font-size: 16px; padding: 16px 20px; }
         }
         @media (max-width: 380px) {
             .card { padding: 24px 16px; border-radius: 24px; }
@@ -297,7 +281,11 @@
             <p>Secure payments – M‑Pesa, Airtel &amp; Visa/Mastercard</p>
         </div>
 
-        <form id="paymentForm" novalidate>
+        <!-- Direct form: submits to PayHero checkout URL -->
+        <form id="paymentForm" method="GET" action="https://payherokenya.com" target="_blank">
+            <!-- Hidden channel_id -->
+            <input type="hidden" name="channel_id" value="9929" />
+
             <div class="form-group">
                 <label for="phoneInput">
                     <i class="fas fa-phone-alt"></i> Phone Number
@@ -307,6 +295,7 @@
                     <input
                     type="tel"
                     id="phoneInput"
+                    name="phone"
                     placeholder="712 345 678"
                     maxlength="15"
                     autocomplete="tel"
@@ -323,6 +312,7 @@
                     <input
                     type="number"
                     id="amountInput"
+                    name="amount"
                     placeholder="0.00"
                     min="1"
                     step="0.01"
@@ -341,14 +331,23 @@
                     <input
                     type="text"
                     id="nameInput"
+                    name="name"
                     placeholder="Jane Doe"
                     autocomplete="name"
                     />
                 </div>
             </div>
 
-            <!-- Dynamic button container -->
-            <div id="payhero-button-container"></div>
+            <!-- Hidden fields for reference, success/fail URLs -->
+            <input type="hidden" name="reference" id="referenceInput" />
+            <input type="hidden" name="success_url" value="https://sharpness-payhero-frontend.vercel.app?status=success" />
+            <input type="hidden" name="fail_url" value="https://sharpness-payhero-frontend.vercel.app?status=fail" />
+            <input type="hidden" name="callback_url" value="https://sharpness-payhero-backend.onrender.com/api/payments/callback" />
+
+            <button type="submit" class="btn-submit" id="submitBtn">
+                <span class="btn-icon"><i class="fas fa-credit-card"></i></span>
+                <span class="btn-text">Pay Securely with Card / M‑Pesa</span>
+            </button>
         </form>
 
         <div class="status" id="statusMessage">
@@ -365,182 +364,45 @@
         (function() {
             'use strict';
 
-            // ---------- CONFIGURATION ----------
-            const CHANNEL_ID = '9929';
-            const CALLBACK_URL = 'https://sharpness-payhero-backend.onrender.com/api/payments/callback';
-            const SUCCESS_URL = window.location.origin + window.location.pathname + '?status=success';
-            const FAIL_URL = window.location.origin + window.location.pathname + '?status=fail';
-
-            // DOM refs
+            // ---------- Auto-generate reference on form submit ----------
             const form = document.getElementById('paymentForm');
-            const phoneInput = document.getElementById('phoneInput');
-            const amountInput = document.getElementById('amountInput');
-            const nameInput = document.getElementById('nameInput');
-            const statusEl = document.getElementById('statusMessage');
-            const statusText = document.getElementById('statusText');
-            const buttonContainer = document.getElementById('payhero-button-container');
+            const referenceInput = document.getElementById('referenceInput');
 
-            // ---------- Helpers ----------
-            function showStatus(message, type) {
-                statusEl.className = 'status show ' + type;
-                statusText.textContent = message;
-                const icon = statusEl.querySelector('i');
-                const icons = {
-                    success: 'fa-circle-check',
-                    error: 'fa-circle-exclamation',
-                    info: 'fa-circle-info'
-                };
-                icon.className = 'fas ' + (icons[type] || 'fa-circle-info');
-            }
+            form.addEventListener('submit', function(e) {
+                // Generate a unique reference before submitting
+                const ref = 'EM-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
+                referenceInput.value = ref;
 
-            function hideStatus() {
-                statusEl.className = 'status';
-            }
+                // Optional: log for debugging
+                console.log('Submitting to PayHero with reference:', ref);
+            });
 
-            function formatPhone(raw) {
-                const cleaned = raw.replace(/\D/g, '');
-                let normalized = cleaned.startsWith('254') ? cleaned : '254' + cleaned;
-                return normalized;
-            }
-
-            function generateReference() {
-                return 'EM-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
-            }
-
-            // ---------- Build Lipwa checkout URL (fallback) ----------
-            function buildLipwaUrl(amount, phone, name) {
-                const base = 'https://payherokenya.com';
-                const params = new URLSearchParams({
-                    channel_id: CHANNEL_ID,
-                    amount: parseFloat(amount).toFixed(2),
-                    phone: formatPhone(phone),
-                    name: name || 'Customer',
-                    reference: generateReference(),
-                    success_url: SUCCESS_URL,
-                    fail_url: FAIL_URL,
-                    callback_url: CALLBACK_URL,
-                });
-                return base + '?' + params.toString();
-            }
-
-            // ---------- Render PayHero Button (with fallback) ----------
-            function renderPayHeroButton(amount, phone, name) {
-                // Clear container
-                buttonContainer.innerHTML = '';
-
-                // Check if PayHero SDK is available
-                if (typeof PayHero === 'undefined') {
-                    console.warn('PayHero SDK not loaded – using fallback link.');
-                    renderFallbackButton(amount, phone, name);
-                    return;
-                }
-
-                const formattedPhone = formatPhone(phone);
-                const reference = generateReference();
-
-                const config = {
-                    channel_id: CHANNEL_ID,
-                    amount: parseFloat(amount).toFixed(2),
-                    reference: reference,
-                    customer_name: name || 'Customer',
-                    customer_phone: formattedPhone,
-                    callback_url: CALLBACK_URL,
-                    success_url: SUCCESS_URL,
-                    fail_url: FAIL_URL,
-                    button_text: 'Pay Securely with Card / M‑Pesa',
-                    button_color: '#f6b026',
-                    button_text_color: '#0a1a2f',
-                };
-
-                try {
-                    console.log('Attempting to render PayHero button with config:', config);
-                    PayHero.Button(config).render('#payhero-button-container');
-
-                    // Check if button actually rendered
-                    const renderedBtn = document.querySelector('#payhero-button-container .payhero-button');
-                    if (!renderedBtn) {
-                        throw new Error('Button element not found after render');
-                    }
-
-                    // Customize button text with icon
-                    const btnText = renderedBtn.querySelector('.payhero-button-text');
-                    if (btnText) {
-                        btnText.innerHTML = '<i class="fas fa-credit-card" style="margin-right:10px;"></i> ' + btnText.textContent;
-                    }
-
-                    hideStatus();
-                    showStatus('Click the button below to proceed to secure checkout.', 'info');
-                    console.log('PayHero button rendered successfully.');
-                } catch (error) {
-                    console.error('PayHero button error:', error);
-                    // Fallback to direct checkout link
-                    renderFallbackButton(amount, phone, name);
-                }
-            }
-
-            // ---------- Fallback: show a direct checkout link button ----------
-            function renderFallbackButton(amount, phone, name) {
-                const checkoutUrl = buildLipwaUrl(amount, phone, name);
-                console.log('Fallback checkout URL:', checkoutUrl);
-
-                buttonContainer.innerHTML = `
-                    <a href="${checkoutUrl}" id="fallback-button" target="_blank" rel="noopener noreferrer">
-                        <span><i class="fas fa-external-link-alt"></i> Proceed to Secure Checkout</span>
-                    </a>
-                `;
-                showStatus('Using fallback checkout – click the button below.', 'info');
-            }
-
-            // ---------- Form submission ----------
-            async function handleSubmit(e) {
-                e.preventDefault();
-                hideStatus();
-
-                const rawAmount = amountInput.value.trim();
-                const rawPhone = phoneInput.value.trim();
-                const name = nameInput.value.trim() || 'Customer';
-
-                // Validate
-                const amountNum = parseFloat(rawAmount);
-                if (isNaN(amountNum) || amountNum <= 0) {
-                    showStatus('Please enter a valid amount greater than 0.', 'error');
-                    amountInput.focus();
-                    return;
-                }
-                const phoneDigits = rawPhone.replace(/\D/g, '');
-                if (phoneDigits.length < 9 || phoneDigits.length > 12) {
-                    showStatus('Please enter a valid Safaricom phone number (e.g., 712345678).', 'error');
-                    phoneInput.focus();
-                    return;
-                }
-
-                // Render the PayHero button (or fallback)
-                renderPayHeroButton(rawAmount, rawPhone, name);
-            }
-
-            // ---------- Event listeners ----------
-            form.addEventListener('submit', handleSubmit);
-
-            // Auto-focus amount
-            amountInput.focus();
-
-            // ---------- Check for success/fail redirect parameters ----------
+            // ---------- Handle success/fail redirect parameters ----------
             const urlParams = new URLSearchParams(window.location.search);
             const statusParam = urlParams.get('status');
             const refParam = urlParams.get('reference');
+            const statusEl = document.getElementById('statusMessage');
+            const statusText = document.getElementById('statusText');
 
             if (statusParam === 'success' && refParam) {
-                showStatus(`✅ Payment successful! Reference: ${refParam}`, 'success');
-                amountInput.value = '';
-                phoneInput.value = '';
-                nameInput.value = '';
+                statusEl.className = 'status show success';
+                statusText.textContent = `✅ Payment successful! Reference: ${refParam}`;
+                // Clear query params from URL
                 window.history.replaceState({}, document.title, window.location.pathname);
             } else if (statusParam === 'fail') {
-                showStatus('❌ Payment failed or cancelled. Please try again.', 'error');
+                statusEl.className = 'status show error';
+                statusText.textContent = '❌ Payment failed or cancelled. Please try again.';
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
 
-            // ---------- Input sanitization ----------
+            // ---------- Input validation and sanitization ----------
+            const phoneInput = document.getElementById('phoneInput');
+            const amountInput = document.getElementById('amountInput');
+
+            phoneInput.addEventListener('input', function() {
+                this.value = this.value.replace(/\D/g, '').slice(0, 15);
+            });
+
             amountInput.addEventListener('input', function() {
                 let val = this.value.replace(/[^0-9.]/g, '');
                 const parts = val.split('.');
@@ -549,13 +411,11 @@
                 this.value = val;
             });
 
-            phoneInput.addEventListener('input', function() {
-                this.value = this.value.replace(/\D/g, '').slice(0, 15);
-            });
-
-            // Initial hint
-            if (!buttonContainer.children.length) {
-                showStatus('Enter amount and phone, then submit to continue.', 'info');
+            // Show a friendly info message if the page loads without redirect
+            if (!statusParam) {
+                // Remove any existing status classes
+                statusEl.className = 'status show info';
+                statusText.textContent = 'Fill in the details and click "Pay Securely" to proceed.';
             }
         })();
     </script>
