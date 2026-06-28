@@ -4,8 +4,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Eagle Master – Pay with PayHero</title>
+
+    <!-- Google Fonts for elegant typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
     <style>
         /* ---------- RESET & BASE ---------- */
         * {
@@ -15,101 +22,140 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(145deg, #f6f9fc 0%, #e9f1f8 100%);
+            font-family: 'Inter', 'Segoe UI', sans-serif;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            background: radial-gradient(circle at 10% 30%, #0a1a2f, #0d2847);
+            background-attachment: fixed;
+            position: relative;
+            overflow-x: hidden;
         }
 
+        /* Subtle animated background particles (optional) */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(2px 2px at 20% 30%, rgba(255, 215, 0, 0.15), transparent),
+                radial-gradient(2px 2px at 40% 70%, rgba(255, 215, 0, 0.10), transparent),
+                radial-gradient(2px 2px at 80% 20%, rgba(255, 215, 0, 0.12), transparent);
+            background-size: 200px 200px;
+            opacity: 0.6;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ---------- CARD (Glass-morphism) ---------- */
         .card {
-            background: #ffffff;
-            border-radius: 32px;
-            box-shadow: 0 20px 60px rgba(0, 20, 40, 0.12), 0 8px 24px rgba(0, 20, 40, 0.06);
-            max-width: 480px;
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 215, 0, 0.05) inset;
+            max-width: 500px;
             width: 100%;
-            padding: 40px 36px;
-            transition: transform 0.2s ease;
+            padding: 48px 40px;
+            transition: transform 0.3s ease, box-shadow 0.4s ease;
         }
 
         .card:hover {
-            transform: translateY(-2px);
+            transform: translateY(-4px);
+            box-shadow: 0 40px 90px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 215, 0, 0.1) inset;
         }
 
+        /* ---------- HEADER ---------- */
         .header {
             text-align: center;
-            margin-bottom: 36px;
+            margin-bottom: 40px;
         }
 
         .header .logo-icon {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 72px;
-            height: 72px;
-            background: linear-gradient(135deg, #1a3a5c, #2b5f8a);
-            border-radius: 20px;
-            color: #fff;
-            font-size: 36px;
-            margin-bottom: 16px;
-            box-shadow: 0 8px 20px rgba(26, 58, 92, 0.25);
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #f6b026, #d48b1c);
+            border-radius: 50%;
+            color: #0a1a2f;
+            font-size: 40px;
+            margin-bottom: 18px;
+            box-shadow: 0 12px 30px rgba(246, 176, 38, 0.3);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .header .logo-icon:hover {
+            transform: scale(1.05) rotate(-5deg);
+            box-shadow: 0 16px 40px rgba(246, 176, 38, 0.5);
         }
 
         .header h1 {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: 700;
-            color: #0a1e2f;
             letter-spacing: -0.5px;
+            background: linear-gradient(to right, #f6b026, #f9d976);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 10px rgba(246, 176, 38, 0.2);
         }
 
         .header p {
-            color: #5a7a94;
+            color: rgba(255, 255, 255, 0.7);
             font-size: 15px;
-            margin-top: 4px;
             font-weight: 400;
+            margin-top: 6px;
+            letter-spacing: 0.3px;
         }
 
+        /* ---------- FORM ---------- */
         .form-group {
-            margin-bottom: 22px;
+            margin-bottom: 24px;
         }
 
         .form-group label {
             display: block;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
-            color: #1a3a5c;
-            margin-bottom: 6px;
-            letter-spacing: 0.3px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
         .form-group label i {
-            margin-right: 8px;
-            color: #2b5f8a;
-            width: 18px;
+            margin-right: 10px;
+            color: #f6b026;
+            width: 20px;
+            text-align: center;
         }
 
         .input-wrapper {
             position: relative;
             display: flex;
             align-items: center;
-            background: #f0f5fa;
-            border-radius: 14px;
-            border: 2px solid transparent;
-            transition: border-color 0.25s ease, background 0.25s ease;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
         }
 
         .input-wrapper:focus-within {
-            border-color: #2b5f8a;
-            background: #ffffff;
-            box-shadow: 0 0 0 4px rgba(43, 95, 138, 0.10);
+            border-color: #f6b026;
+            background: rgba(255, 255, 255, 0.10);
+            box-shadow: 0 0 0 4px rgba(246, 176, 38, 0.15);
         }
 
         .input-wrapper .prefix {
             padding: 0 0 0 18px;
             font-weight: 600;
-            color: #1a3a5c;
+            color: rgba(255, 255, 255, 0.7);
             font-size: 15px;
             white-space: nowrap;
             background: transparent;
@@ -123,24 +169,15 @@
             padding: 16px 18px;
             font-size: 16px;
             font-weight: 500;
-            color: #0a1e2f;
+            color: #ffffff;
             background: transparent;
             border: none;
             outline: none;
             font-family: inherit;
         }
 
-        .input-wrapper select {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231a3a5c' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 18px center;
-            background-size: 12px;
-            cursor: pointer;
-        }
-
         .input-wrapper input::placeholder {
-            color: #9ab0c4;
+            color: rgba(255, 255, 255, 0.35);
             font-weight: 400;
         }
 
@@ -157,59 +194,101 @@
         .input-wrapper .currency {
             padding: 0 18px 0 0;
             font-weight: 700;
-            color: #1a3a5c;
+            color: rgba(255, 255, 255, 0.6);
             font-size: 16px;
             background: transparent;
             border: none;
             pointer-events: none;
         }
 
+        /* Custom select arrow */
+        .input-wrapper select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23f6b026' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 18px center;
+            background-size: 12px;
+            cursor: pointer;
+            color: #fff;
+        }
+
+        .input-wrapper select option {
+            background: #1a2f4a;
+            color: #fff;
+        }
+
+        /* ---------- BUTTON (with shimmer animation) ---------- */
         .btn-submit {
+            position: relative;
             width: 100%;
             padding: 18px 24px;
-            background: linear-gradient(135deg, #1a3a5c, #2b5f8a);
-            color: #fff;
+            background: linear-gradient(135deg, #f6b026, #d48b1c);
+            color: #0a1a2f;
             font-size: 18px;
             font-weight: 700;
             border: none;
-            border-radius: 14px;
+            border-radius: 16px;
             cursor: pointer;
-            transition: all 0.25s ease;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
-            margin-top: 8px;
-            box-shadow: 0 8px 24px rgba(26, 58, 92, 0.25);
+            gap: 14px;
+            margin-top: 12px;
+            box-shadow: 0 8px 30px rgba(246, 176, 38, 0.3);
             letter-spacing: 0.5px;
             overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn-submit::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 16px;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+            z-index: 0;
         }
 
         .btn-submit:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 32px rgba(26, 58, 92, 0.35);
-            background: linear-gradient(135deg, #1f4770, #336f9e);
+            box-shadow: 0 12px 40px rgba(246, 176, 38, 0.45);
+        }
+
+        .btn-submit:hover::before {
+            transform: translateX(100%);
         }
 
         .btn-submit:active {
             transform: translateY(0px);
-            box-shadow: 0 4px 12px rgba(26, 58, 92, 0.20);
+            box-shadow: 0 4px 20px rgba(246, 176, 38, 0.25);
         }
 
         .btn-submit:disabled {
-            opacity: 0.7;
+            opacity: 0.5;
             cursor: not-allowed;
             transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .btn-submit .btn-icon,
+        .btn-submit .btn-text {
+            position: relative;
+            z-index: 1;
         }
 
         .btn-submit .spinner {
             display: none;
-            width: 22px;
-            height: 22px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-top-color: #fff;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(10, 26, 47, 0.2);
+            border-top-color: #0a1a2f;
             border-radius: 50%;
-            animation: spin 0.7s linear infinite;
+            animation: spin 0.8s linear infinite;
+            position: relative;
+            z-index: 1;
         }
 
         .btn-submit.loading .spinner {
@@ -230,16 +309,19 @@
             }
         }
 
+        /* ---------- STATUS ---------- */
         .status {
-            margin-top: 20px;
+            margin-top: 24px;
             padding: 14px 18px;
-            border-radius: 12px;
+            border-radius: 14px;
             font-size: 14px;
             font-weight: 500;
             display: none;
             align-items: center;
             gap: 12px;
             border: 1px solid transparent;
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(10px);
         }
 
         .status.show {
@@ -247,21 +329,21 @@
         }
 
         .status.success {
-            background: #e6f7ed;
-            border-color: #b8e6cf;
-            color: #0f5233;
+            border-color: #4caf50;
+            color: #b9f6ca;
+            background: rgba(76, 175, 80, 0.15);
         }
 
         .status.error {
-            background: #fde8e8;
-            border-color: #f5c2c2;
-            color: #8f2a2a;
+            border-color: #ef5350;
+            color: #ffcdd2;
+            background: rgba(239, 83, 80, 0.15);
         }
 
         .status.info {
-            background: #e4edf5;
-            border-color: #b8d1e6;
-            color: #1a3a5c;
+            border-color: #42a5f5;
+            color: #bbdefb;
+            background: rgba(66, 165, 245, 0.15);
         }
 
         .status i {
@@ -269,19 +351,32 @@
             flex-shrink: 0;
         }
 
+        /* ---------- FOOTER TEXT ---------- */
+        .footer-text {
+            margin-top: 20px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.35);
+            text-align: center;
+            letter-spacing: 0.3px;
+        }
+        .footer-text i {
+            margin-right: 6px;
+            color: rgba(255, 255, 255, 0.25);
+        }
+
         /* ---------- MODAL ---------- */
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(10, 30, 47, 0.60);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             display: none;
             align-items: center;
             justify-content: center;
             padding: 20px;
             z-index: 1000;
-            animation: fadeIn 0.25s ease;
+            animation: fadeIn 0.3s ease;
         }
 
         .modal-overlay.active {
@@ -300,24 +395,27 @@
         }
 
         .modal {
-            background: #ffffff;
-            border-radius: 32px;
-            max-width: 420px;
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            max-width: 440px;
             width: 100%;
-            padding: 36px 32px 32px;
-            box-shadow: 0 32px 80px rgba(0, 0, 0, 0.30);
+            padding: 40px 36px 36px;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
             text-align: center;
-            animation: slideUp 0.3s ease;
+            animation: slideUp 0.35s ease;
         }
 
         @keyframes slideUp {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateY(30px) scale(0.96);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateY(0) scale(1);
             }
         }
 
@@ -327,31 +425,32 @@
             justify-content: center;
             width: 72px;
             height: 72px;
-            background: #e8f0fe;
+            background: rgba(246, 176, 38, 0.12);
             border-radius: 50%;
-            color: #1a3a5c;
+            color: #f6b026;
             font-size: 34px;
             margin-bottom: 16px;
+            border: 1px solid rgba(246, 176, 38, 0.15);
         }
 
         .modal h2 {
             font-size: 24px;
             font-weight: 700;
-            color: #0a1e2f;
-            margin-bottom: 6px;
+            color: #ffffff;
+            margin-bottom: 4px;
         }
 
         .modal p.sub {
-            color: #5a7a94;
+            color: rgba(255, 255, 255, 0.6);
             font-size: 15px;
-            margin-bottom: 24px;
+            margin-bottom: 28px;
         }
 
         .modal .detail-row {
             display: flex;
             justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid #eef4f8;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
             font-size: 15px;
         }
 
@@ -360,28 +459,32 @@
         }
 
         .modal .detail-row .label {
-            color: #5a7a94;
+            color: rgba(255, 255, 255, 0.5);
             font-weight: 500;
         }
 
         .modal .detail-row .value {
-            color: #0a1e2f;
-            font-weight: 700;
+            color: #ffffff;
+            font-weight: 600;
         }
 
         .modal .detail-row .value.phone {
-            color: #1a3a5c;
+            color: #f6b026;
         }
 
         .modal .detail-row .value.amount {
-            color: #0f5233;
+            color: #f6b026;
             font-size: 18px;
+        }
+
+        .modal .detail-row .value.provider {
+            color: #81d4fa;
         }
 
         .modal .modal-actions {
             display: flex;
             gap: 12px;
-            margin-top: 28px;
+            margin-top: 32px;
         }
 
         .modal .modal-actions button {
@@ -393,57 +496,71 @@
             border-radius: 14px;
             cursor: pointer;
             transition: all 0.2s ease;
+            font-family: inherit;
         }
 
         .modal .btn-cancel {
-            background: #eef4f8;
-            color: #1a3a5c;
+            background: rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .modal .btn-cancel:hover {
-            background: #dce6ef;
+            background: rgba(255, 255, 255, 0.10);
+            color: #fff;
         }
 
         .modal .btn-confirm {
-            background: linear-gradient(135deg, #1a3a5c, #2b5f8a);
-            color: #fff;
-            box-shadow: 0 6px 16px rgba(26, 58, 92, 0.25);
+            background: linear-gradient(135deg, #f6b026, #d48b1c);
+            color: #0a1a2f;
+            box-shadow: 0 6px 24px rgba(246, 176, 38, 0.3);
         }
 
         .modal .btn-confirm:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 8px 24px rgba(26, 58, 92, 0.35);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 32px rgba(246, 176, 38, 0.45);
         }
 
         .modal .btn-confirm:disabled {
-            opacity: 0.6;
+            opacity: 0.5;
             cursor: not-allowed;
             transform: none !important;
+            box-shadow: none !important;
         }
 
+        /* ---------- RESPONSIVE ---------- */
         @media (max-width: 520px) {
             .card {
-                padding: 28px 20px;
-                border-radius: 24px;
+                padding: 32px 24px;
+                border-radius: 28px;
             }
+
             .header h1 {
-                font-size: 24px;
+                font-size: 26px;
             }
+            .header .logo-icon {
+                width: 64px;
+                height: 64px;
+                font-size: 32px;
+            }
+
             .input-wrapper input,
             .input-wrapper select {
                 font-size: 15px;
-                padding: 14px 14px;
+                padding: 14px 16px;
             }
+
             .btn-submit {
                 font-size: 16px;
                 padding: 16px 20px;
             }
+
             .modal {
                 padding: 28px 20px 24px;
             }
             .modal .detail-row {
                 font-size: 14px;
-                padding: 10px 0;
+                padding: 12px 0;
             }
             .modal .modal-actions {
                 flex-direction: column;
@@ -452,7 +569,8 @@
 
         @media (max-width: 380px) {
             .card {
-                padding: 20px 14px;
+                padding: 24px 16px;
+                border-radius: 24px;
             }
             .input-wrapper .prefix,
             .input-wrapper .currency {
@@ -461,12 +579,8 @@
             .input-wrapper input,
             .input-wrapper select {
                 font-size: 14px;
-                padding: 12px 10px;
+                padding: 12px 14px;
             }
-        }
-
-        .text-center {
-            text-align: center;
         }
     </style>
 </head>
@@ -475,7 +589,7 @@
     <div class="card">
         <div class="header">
             <div class="logo-icon">
-              <i class="fas fa-dove"></i>
+                <i class="fas fa-dove"></i>
             </div>
             <h1>Eagle Master</h1>
             <p>Secure payment with PayHero</p>
@@ -517,7 +631,7 @@
                 </div>
             </div>
 
-            <!-- NEW: Provider Selection -->
+            <!-- Provider Selection -->
             <div class="form-group">
                 <label for="providerSelect">
                     <i class="fas fa-wifi"></i> Payment Network
@@ -526,8 +640,7 @@
                     <select id="providerSelect">
                         <option value="m-pesa">M-Pesa</option>
                         <option value="airtel">Airtel Money</option>
-                        <!-- Add more providers as needed -->
-                        <!-- e.g., <option value="t-kash">T-Kash</option> -->
+                        <!-- Add more as needed -->
                     </select>
                 </div>
             </div>
@@ -544,9 +657,8 @@
             <span id="statusText">Success</span>
         </div>
 
-        <p style="margin-top:18px; font-size:13px; color:#9ab0c4; text-align:center;">
-            <i class="fas fa-lock" style="margin-right:6px;"></i>
-            Secured &bull; You'll receive a prompt on your phone
+        <p class="footer-text">
+            <i class="fas fa-lock"></i> Secured &bull; You'll receive a prompt on your phone
         </p>
     </div>
 
@@ -569,7 +681,7 @@
             </div>
             <div class="detail-row">
                 <span class="label"><i class="fas fa-wifi" style="margin-right:8px;"></i>Network</span>
-                <span class="value" id="modalProvider">—</span>
+                <span class="value provider" id="modalProvider">—</span>
             </div>
 
             <div class="modal-actions">
@@ -692,7 +804,7 @@
                 modalProvider.textContent = providerLabel;
                 modalConfirm._phoneRaw = phoneInfo.raw;
                 modalConfirm._amount = formattedAmount;
-                modalConfirm._provider = provider; // store the raw value
+                modalConfirm._provider = provider;
                 modalOverlay.classList.add('active');
             }
 
@@ -717,7 +829,6 @@
                         body: JSON.stringify(payload),
                     });
 
-                    // Try to parse JSON, even on error
                     let data;
                     const text = await response.text();
                     try {
@@ -737,7 +848,6 @@
                     );
                     phoneInput.value = '';
                     amountInput.value = '';
-                    // reset provider to default
                     providerSelect.value = 'm-pesa';
                 } catch (err) {
                     console.error('❌ Payment error:', err);
