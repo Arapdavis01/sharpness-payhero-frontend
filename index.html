@@ -556,7 +556,6 @@
 
             // ----------------------------------------------------------------
             //  ✅ CORRECT BACKEND URL – your Render backend
-            //  (if your backend URL changes, update this constant)
             // ----------------------------------------------------------------
             const API_BASE = 'https://sharpness-payhero-backend.onrender.com';
             const INITIATE_URL = API_BASE + '/api/payments/initiate';
@@ -663,16 +662,28 @@
 
                 try {
                     const payload = { phone, amount };
+                    // Log the payload for debugging
+                    console.log('📦 Sending payload:', payload);
+
                     const response = await fetch(INITIATE_URL, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload),
                     });
 
-                    const data = await response.json();
+                    // Try to parse JSON, even on error
+                    let data;
+                    const text = await response.text();
+                    try {
+                        data = JSON.parse(text);
+                    } catch (e) {
+                        data = { message: text || 'Unknown error' };
+                    }
 
                     if (!response.ok) {
-                        throw new Error(data.message || `Server error (${response.status})`);
+                        // Use the backend's error message if available
+                        const errorMsg = data.message || `HTTP ${response.status}`;
+                        throw new Error(errorMsg);
                     }
 
                     showStatus(
@@ -682,6 +693,7 @@
                     phoneInput.value = '';
                     amountInput.value = '';
                 } catch (err) {
+                    console.error('❌ Payment error:', err);
                     showStatus(`❌ ${err.message || 'Payment failed. Please try again.'}`, 'error');
                 } finally {
                     setLoading(false);
