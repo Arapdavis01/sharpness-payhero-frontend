@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
     <style>
-        /* ---------- SAME BEAUTIFUL STYLES (unchanged) ---------- */
+        /* ---------- RESET & BASE ---------- */
         * {
             margin: 0;
             padding: 0;
@@ -37,13 +37,15 @@
             position: fixed;
             inset: 0;
             background: radial-gradient(2px 2px at 20% 30%, rgba(255, 215, 0, 0.15), transparent),
-                radial-gradient(2px 2px at 40% 70%, rgba(255, 215, 0, 0.10), transparent),
-                radial-gradient(2px 2px at 80% 20%, rgba(255, 215, 0, 0.12), transparent);
+                        radial-gradient(2px 2px at 40% 70%, rgba(255, 215, 0, 0.10), transparent),
+                        radial-gradient(2px 2px at 80% 20%, rgba(255, 215, 0, 0.12), transparent);
             background-size: 200px 200px;
             opacity: 0.6;
             pointer-events: none;
             z-index: 0;
         }
+
+        /* ---------- CARD (Glass-morphism) ---------- */
         .card {
             position: relative;
             z-index: 1;
@@ -62,6 +64,8 @@
             transform: translateY(-4px);
             box-shadow: 0 40px 90px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 215, 0, 0.1) inset;
         }
+
+        /* ---------- HEADER ---------- */
         .header {
             text-align: center;
             margin-bottom: 40px;
@@ -101,6 +105,8 @@
             margin-top: 6px;
             letter-spacing: 0.3px;
         }
+
+        /* ---------- FORM FIELDS ---------- */
         .form-group {
             margin-bottom: 24px;
         }
@@ -176,14 +182,17 @@
             pointer-events: none;
         }
 
-        /* ---------- BUTTON (no widget, just a form submit) ---------- */
-        .btn-submit {
+        /* ---------- TWO BUTTONS ROW ---------- */
+        .button-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+        .btn-pay {
+            flex: 1;
             position: relative;
-            width: 100%;
-            padding: 18px 24px;
-            background: linear-gradient(135deg, #f6b026, #d48b1c);
-            color: #0a1a2f;
-            font-size: 18px;
+            padding: 16px 12px;
+            font-size: 16px;
             font-weight: 700;
             border: none;
             border-radius: 16px;
@@ -192,15 +201,16 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 14px;
-            margin-top: 12px;
-            box-shadow: 0 8px 30px rgba(246, 176, 38, 0.3);
-            letter-spacing: 0.5px;
+            gap: 10px;
             overflow: hidden;
             z-index: 1;
             font-family: inherit;
+            text-decoration: none;
+            color: #0a1a2f;
+            background: linear-gradient(135deg, #f6b026, #d48b1c);
+            box-shadow: 0 8px 30px rgba(246, 176, 38, 0.3);
         }
-        .btn-submit::before {
+        .btn-pay::before {
             content: '';
             position: absolute;
             inset: 0;
@@ -210,23 +220,55 @@
             transition: transform 0.6s ease;
             z-index: 0;
         }
-        .btn-submit:hover {
+        .btn-pay:hover {
             transform: translateY(-2px);
             box-shadow: 0 12px 40px rgba(246, 176, 38, 0.45);
         }
-        .btn-submit:hover::before {
+        .btn-pay:hover::before {
             transform: translateX(100%);
         }
-        .btn-submit:active {
+        .btn-pay:active {
             transform: translateY(0px);
             box-shadow: 0 4px 20px rgba(246, 176, 38, 0.25);
         }
-        .btn-submit .btn-icon,
-        .btn-submit .btn-text {
+        .btn-pay .btn-icon,
+        .btn-pay .btn-text {
             position: relative;
             z-index: 1;
         }
+        .btn-pay.card-btn {
+            background: linear-gradient(135deg, #e0e0e0, #b0b0b0);
+            box-shadow: 0 8px 30px rgba(200, 200, 200, 0.3);
+            color: #0a1a2f;
+        }
+        .btn-pay.card-btn:hover {
+            box-shadow: 0 12px 40px rgba(200, 200, 200, 0.45);
+        }
+        .btn-pay .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(10, 26, 47, 0.2);
+            border-top-color: #0a1a2f;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            position: relative;
+            z-index: 1;
+        }
+        .btn-pay.loading .spinner {
+            display: inline-block;
+        }
+        .btn-pay.loading .btn-text {
+            display: none;
+        }
+        .btn-pay.loading .btn-icon {
+            display: none;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
 
+        /* ---------- STATUS ---------- */
         .status {
             margin-top: 24px;
             padding: 14px 18px;
@@ -255,12 +297,136 @@
         }
         .footer-text i { margin-right: 6px; color: rgba(255, 255, 255, 0.25); }
 
+        /* ---------- MODAL (for STK confirmation) ---------- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-overlay.active { display: flex; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.96); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .modal {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            max-width: 440px;
+            width: 100%;
+            padding: 40px 36px 36px;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+            text-align: center;
+            animation: slideUp 0.35s ease;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .modal .modal-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 72px;
+            height: 72px;
+            background: rgba(246, 176, 38, 0.12);
+            border-radius: 50%;
+            color: #f6b026;
+            font-size: 34px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(246, 176, 38, 0.15);
+        }
+        .modal h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+        .modal p.sub {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 15px;
+            margin-bottom: 28px;
+        }
+        .modal .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 15px;
+        }
+        .modal .detail-row:last-of-type { border-bottom: none; }
+        .modal .detail-row .label {
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 500;
+        }
+        .modal .detail-row .value {
+            color: #ffffff;
+            font-weight: 600;
+        }
+        .modal .detail-row .value.phone { color: #f6b026; }
+        .modal .detail-row .value.amount { color: #f6b026; font-size: 18px; }
+        .modal .detail-row .value.provider { color: #81d4fa; }
+        .modal .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 32px;
+        }
+        .modal .modal-actions button {
+            flex: 1;
+            padding: 14px 18px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+        .modal .btn-cancel {
+            background: rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .modal .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.10);
+            color: #fff;
+        }
+        .modal .btn-confirm {
+            background: linear-gradient(135deg, #f6b026, #d48b1c);
+            color: #0a1a2f;
+            box-shadow: 0 6px 24px rgba(246, 176, 38, 0.3);
+        }
+        .modal .btn-confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 32px rgba(246, 176, 38, 0.45);
+        }
+        .modal .btn-confirm:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
         @media (max-width: 520px) {
             .card { padding: 32px 24px; border-radius: 28px; }
             .header h1 { font-size: 26px; }
             .header .logo-icon { width: 64px; height: 64px; font-size: 32px; }
             .input-wrapper input { font-size: 15px; padding: 14px 16px; }
-            .btn-submit { font-size: 16px; padding: 16px 20px; }
+            .btn-pay { font-size: 15px; padding: 14px 12px; }
+            .button-row { flex-direction: column; }
+            .modal { padding: 28px 20px 24px; }
+            .modal .detail-row { font-size: 14px; padding: 12px 0; }
+            .modal .modal-actions { flex-direction: column; }
         }
         @media (max-width: 380px) {
             .card { padding: 24px 16px; border-radius: 24px; }
@@ -278,14 +444,12 @@
                 <i class="fas fa-dove"></i>
             </div>
             <h1>Eagle Master</h1>
-            <p>Secure payments – M‑Pesa, Airtel &amp; Visa/Mastercard</p>
+            <p>Choose your payment method</p>
         </div>
 
-        <!-- Direct form: submits to PayHero checkout URL -->
-        <form id="paymentForm" method="GET" action="https://payherokenya.com" target="_blank">
-            <!-- Hidden channel_id -->
-            <input type="hidden" name="channel_id" value="9929" />
-
+        <!-- Main Form -->
+        <form id="paymentForm" novalidate>
+            <!-- Common fields -->
             <div class="form-group">
                 <label for="phoneInput">
                     <i class="fas fa-phone-alt"></i> Phone Number
@@ -295,7 +459,6 @@
                     <input
                     type="tel"
                     id="phoneInput"
-                    name="phone"
                     placeholder="712 345 678"
                     maxlength="15"
                     autocomplete="tel"
@@ -312,7 +475,6 @@
                     <input
                     type="number"
                     id="amountInput"
-                    name="amount"
                     placeholder="0.00"
                     min="1"
                     step="0.01"
@@ -331,23 +493,28 @@
                     <input
                     type="text"
                     id="nameInput"
-                    name="name"
                     placeholder="Jane Doe"
                     autocomplete="name"
                     />
                 </div>
             </div>
 
-            <!-- Hidden fields for reference, success/fail URLs -->
-            <input type="hidden" name="reference" id="referenceInput" />
-            <input type="hidden" name="success_url" value="https://sharpness-payhero-frontend.vercel.app?status=success" />
-            <input type="hidden" name="fail_url" value="https://sharpness-payhero-frontend.vercel.app?status=fail" />
-            <input type="hidden" name="callback_url" value="https://sharpness-payhero-backend.onrender.com/api/payments/callback" />
+            <!-- Two buttons row -->
+            <div class="button-row">
+                <!-- STK Push Button -->
+                <button type="button" class="btn-pay" id="stkBtn">
+                    <span class="btn-icon"><i class="fas fa-mobile-alt"></i></span>
+                    <span class="btn-text">M‑Pesa / Airtel</span>
+                    <span class="spinner"></span>
+                </button>
 
-            <button type="submit" class="btn-submit" id="submitBtn">
-                <span class="btn-icon"><i class="fas fa-credit-card"></i></span>
-                <span class="btn-text">Pay Securely with Card / M‑Pesa</span>
-            </button>
+                <!-- Card Button -->
+                <button type="button" class="btn-pay card-btn" id="cardBtn">
+                    <span class="btn-icon"><i class="fas fa-credit-card"></i></span>
+                    <span class="btn-text">Pay with Card</span>
+                    <span class="spinner"></span>
+                </button>
+            </div>
         </form>
 
         <div class="status" id="statusMessage">
@@ -356,53 +523,248 @@
         </div>
 
         <p class="footer-text">
-            <i class="fas fa-lock"></i> Secured by PayHero &bull; Card &amp; Mobile Money accepted
+            <i class="fas fa-lock"></i> Secured by PayHero &bull; Visa / Mastercard &amp; Mobile Money
         </p>
+    </div>
+
+    <!-- Confirmation Modal (for STK only) -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal">
+            <div class="modal-icon">
+                <i class="fas fa-receipt"></i>
+            </div>
+            <h2>Confirm Payment</h2>
+            <p class="sub">Please verify the details below before continuing</p>
+
+            <div class="detail-row">
+                <span class="label"><i class="fas fa-phone-alt" style="margin-right:8px;"></i>Phone</span>
+                <span class="value phone" id="modalPhone">—</span>
+            </div>
+            <div class="detail-row">
+                <span class="label"><i class="fas fa-coins" style="margin-right:8px;"></i>Amount</span>
+                <span class="value amount" id="modalAmount">—</span>
+            </div>
+            <div class="detail-row">
+                <span class="label"><i class="fas fa-wifi" style="margin-right:8px;"></i>Network</span>
+                <span class="value provider" id="modalProvider">—</span>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-cancel" id="modalCancel">Cancel</button>
+                <button class="btn-confirm" id="modalConfirm">
+                    <i class="fas fa-check" style="margin-right:8px;"></i> Confirm &amp; Pay
+                </button>
+            </div>
+        </div>
     </div>
 
     <script>
         (function() {
             'use strict';
 
-            // ---------- Auto-generate reference on form submit ----------
-            const form = document.getElementById('paymentForm');
-            const referenceInput = document.getElementById('referenceInput');
+            // ---------- CONFIGURATION ----------
+            const CHANNEL_ID = '9929';
+            const API_BASE = 'https://sharpness-payhero-backend.onrender.com';
+            const INITIATE_URL = API_BASE + '/api/payments/initiate';
+            const CALLBACK_URL = 'https://sharpness-payhero-backend.onrender.com/api/payments/callback';
+            const SUCCESS_URL = window.location.origin + window.location.pathname + '?status=success';
+            const FAIL_URL = window.location.origin + window.location.pathname + '?status=fail';
 
-            form.addEventListener('submit', function(e) {
-                // Generate a unique reference before submitting
-                const ref = 'EM-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
-                referenceInput.value = ref;
-
-                // Optional: log for debugging
-                console.log('Submitting to PayHero with reference:', ref);
-            });
-
-            // ---------- Handle success/fail redirect parameters ----------
-            const urlParams = new URLSearchParams(window.location.search);
-            const statusParam = urlParams.get('status');
-            const refParam = urlParams.get('reference');
+            // DOM refs
+            const phoneInput = document.getElementById('phoneInput');
+            const amountInput = document.getElementById('amountInput');
+            const nameInput = document.getElementById('nameInput');
+            const stkBtn = document.getElementById('stkBtn');
+            const cardBtn = document.getElementById('cardBtn');
             const statusEl = document.getElementById('statusMessage');
             const statusText = document.getElementById('statusText');
 
-            if (statusParam === 'success' && refParam) {
-                statusEl.className = 'status show success';
-                statusText.textContent = `✅ Payment successful! Reference: ${refParam}`;
-                // Clear query params from URL
-                window.history.replaceState({}, document.title, window.location.pathname);
-            } else if (statusParam === 'fail') {
-                statusEl.className = 'status show error';
-                statusText.textContent = '❌ Payment failed or cancelled. Please try again.';
-                window.history.replaceState({}, document.title, window.location.pathname);
+            // Modal refs
+            const modalOverlay = document.getElementById('confirmModal');
+            const modalPhone = document.getElementById('modalPhone');
+            const modalAmount = document.getElementById('modalAmount');
+            const modalProvider = document.getElementById('modalProvider');
+            const modalCancel = document.getElementById('modalCancel');
+            const modalConfirm = document.getElementById('modalConfirm');
+
+            // ---------- Helpers ----------
+            function showStatus(message, type) {
+                statusEl.className = 'status show ' + type;
+                statusText.textContent = message;
+                const icon = statusEl.querySelector('i');
+                const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', info: 'fa-circle-info' };
+                icon.className = 'fas ' + (icons[type] || 'fa-circle-info');
             }
 
-            // ---------- Input validation and sanitization ----------
-            const phoneInput = document.getElementById('phoneInput');
-            const amountInput = document.getElementById('amountInput');
+            function hideStatus() {
+                statusEl.className = 'status';
+            }
 
+            function formatPhone(raw) {
+                const cleaned = raw.replace(/\D/g, '');
+                let normalized = cleaned.startsWith('254') ? cleaned : '254' + cleaned;
+                const display = '+' + normalized.slice(0, 3) + ' ' +
+                    normalized.slice(3).match(/.{1,3}/g)?.join(' ') || '';
+                return { raw: normalized, display };
+            }
+
+            function formatCurrency(amount) {
+                const num = parseFloat(amount);
+                return isNaN(num) || num < 0 ? '0.00' : num.toFixed(2);
+            }
+
+            function generateReference() {
+                return 'EM-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
+            }
+
+            function setLoading(btn, loading) {
+                btn.classList.toggle('loading', loading);
+                btn.disabled = loading;
+            }
+
+            function validateInputs() {
+                const rawPhone = phoneInput.value.trim();
+                const rawAmount = amountInput.value.trim();
+                const phoneDigits = rawPhone.replace(/\D/g, '');
+                const amountNum = parseFloat(rawAmount);
+
+                if (phoneDigits.length < 9 || phoneDigits.length > 12) {
+                    showStatus('Please enter a valid phone number (e.g., 712345678).', 'error');
+                    phoneInput.focus();
+                    return null;
+                }
+                if (isNaN(amountNum) || amountNum <= 0) {
+                    showStatus('Please enter a valid amount greater than 0.', 'error');
+                    amountInput.focus();
+                    return null;
+                }
+                return { phone: rawPhone, amount: rawAmount };
+            }
+
+            // ---------- STK Push flow ----------
+            stkBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                hideStatus();
+
+                const data = validateInputs();
+                if (!data) return;
+
+                const phoneInfo = formatPhone(data.phone);
+                const formattedAmount = formatCurrency(data.amount);
+
+                // Show confirmation modal
+                modalPhone.textContent = phoneInfo.display;
+                modalAmount.textContent = 'KES ' + formattedAmount;
+                modalProvider.textContent = 'M‑Pesa / Airtel (STK)';
+                modalConfirm._phoneRaw = phoneInfo.raw;
+                modalConfirm._amount = formattedAmount;
+                modalConfirm._provider = 'm-pesa'; // default, user can change if needed
+                modalOverlay.classList.add('active');
+            });
+
+            // Confirm STK payment
+            modalConfirm.addEventListener('click', async function() {
+                const phone = modalConfirm._phoneRaw;
+                const amount = modalConfirm._amount;
+                const provider = modalConfirm._provider || 'm-pesa';
+
+                modalOverlay.classList.remove('active');
+                setLoading(stkBtn, true);
+                hideStatus();
+                showStatus('Initiating payment…', 'info');
+
+                try {
+                    const payload = { phone, amount, provider };
+                    const response = await fetch(INITIATE_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload),
+                    });
+
+                    let data;
+                    const text = await response.text();
+                    try { data = JSON.parse(text); } catch (e) { data = { message: text || 'Unknown error' }; }
+
+                    if (!response.ok) {
+                        const errorMsg = data.message || `HTTP ${response.status}`;
+                        throw new Error(errorMsg);
+                    }
+
+                    showStatus(`✅ Payment initiated! Reference: ${data.data?.reference || 'N/A'}`, 'success');
+                    phoneInput.value = '';
+                    amountInput.value = '';
+                    nameInput.value = '';
+                } catch (err) {
+                    console.error('STK error:', err);
+                    showStatus(`❌ ${err.message || 'Payment failed. Please try again.'}`, 'error');
+                } finally {
+                    setLoading(stkBtn, false);
+                }
+            });
+
+            // ---------- Card flow ----------
+            cardBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                hideStatus();
+
+                const data = validateInputs();
+                if (!data) return;
+
+                const phoneInfo = formatPhone(data.phone);
+                const amountNum = parseFloat(data.amount);
+                const name = nameInput.value.trim() || 'Customer';
+
+                // Build PayHero checkout URL
+                const baseUrl = 'https://payhero.co.ke/checkout'; // verify this is correct
+                const params = new URLSearchParams({
+                    channel_id: CHANNEL_ID,
+                    amount: amountNum.toFixed(2),
+                    phone: phoneInfo.raw,
+                    name: name,
+                    reference: generateReference(),
+                    success_url: SUCCESS_URL,
+                    fail_url: FAIL_URL,
+                    callback_url: CALLBACK_URL,
+                });
+                const checkoutUrl = baseUrl + '?' + params.toString();
+
+                // Open in new tab
+                window.open(checkoutUrl, '_blank');
+                showStatus('Redirecting to secure card payment…', 'info');
+            });
+
+            // ---------- Modal cancel ----------
+            modalCancel.addEventListener('click', function() {
+                modalOverlay.classList.remove('active');
+                hideStatus();
+            });
+            modalOverlay.addEventListener('click', function(e) {
+                if (e.target === modalOverlay) modalCancel.click();
+            });
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modalOverlay.classList.contains('active')) modalCancel.click();
+            });
+
+            // ---------- Handle success/fail from URL ----------
+            const urlParams = new URLSearchParams(window.location.search);
+            const statusParam = urlParams.get('status');
+            const refParam = urlParams.get('reference');
+
+            if (statusParam === 'success' && refParam) {
+                showStatus(`✅ Payment successful! Reference: ${refParam}`, 'success');
+                window.history.replaceState({}, document.title, window.location.pathname);
+            } else if (statusParam === 'fail') {
+                showStatus('❌ Payment failed or cancelled. Please try again.', 'error');
+                window.history.replaceState({}, document.title, window.location.pathname);
+            } else {
+                // Initial state
+                showStatus('Fill in the details and choose a payment method.', 'info');
+            }
+
+            // ---------- Input sanitization ----------
             phoneInput.addEventListener('input', function() {
                 this.value = this.value.replace(/\D/g, '').slice(0, 15);
             });
-
             amountInput.addEventListener('input', function() {
                 let val = this.value.replace(/[^0-9.]/g, '');
                 const parts = val.split('.');
@@ -411,12 +773,8 @@
                 this.value = val;
             });
 
-            // Show a friendly info message if the page loads without redirect
-            if (!statusParam) {
-                // Remove any existing status classes
-                statusEl.className = 'status show info';
-                statusText.textContent = 'Fill in the details and click "Pay Securely" to proceed.';
-            }
+            // Auto focus
+            amountInput.focus();
         })();
     </script>
 
