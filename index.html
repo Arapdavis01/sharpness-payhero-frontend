@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bomayangu – Pay with PayHero</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        /* ---------- RESET & BASE ---------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(145deg, #f6f9fc 0%, #e9f1f8 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 32px;
+            box-shadow: 0 20px 60px rgba(0, 20, 40, 0.12), 0 8px 24px rgba(0, 20, 40, 0.06);
+            max-width: 480px;
+            width: 100%;
+            padding: 40px 36px;
+            transition: transform 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+
+        .header .logo-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 72px;
+            height: 72px;
+            background: linear-gradient(135deg, #1a3a5c, #2b5f8a);
+            border-radius: 20px;
+            color: #fff;
+            font-size: 36px;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 20px rgba(26, 58, 92, 0.25);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #0a1e2f;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            color: #5a7a94;
+            font-size: 15px;
+            margin-top: 4px;
+            font-weight: 400;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a3a5c;
+            margin-bottom: 6px;
+            letter-spacing: 0.3px;
+        }
+
+        .form-group label i {
+            margin-right: 8px;
+            color: #2b5f8a;
+            width: 18px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: #f0f5fa;
+            border-radius: 14px;
+            border: 2px solid transparent;
+            transition: border-color 0.25s ease, background 0.25s ease;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: #2b5f8a;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(43, 95, 138, 0.10);
+        }
+
+        .input-wrapper .prefix {
+            padding: 0 0 0 18px;
+            font-weight: 600;
+            color: #1a3a5c;
+            font-size: 15px;
+            white-space: nowrap;
+            background: transparent;
+            border: none;
+            pointer-events: none;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 16px 18px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #0a1e2f;
+            background: transparent;
+            border: none;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .input-wrapper input::placeholder {
+            color: #9ab0c4;
+            font-weight: 400;
+        }
+
+        .input-wrapper input[type="number"]::-webkit-inner-spin-button,
+        .input-wrapper input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .input-wrapper input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        .input-wrapper .currency {
+            padding: 0 18px 0 0;
+            font-weight: 700;
+            color: #1a3a5c;
+            font-size: 16px;
+            background: transparent;
+            border: none;
+            pointer-events: none;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 18px 24px;
+            background: linear-gradient(135deg, #1a3a5c, #2b5f8a);
+            color: #fff;
+            font-size: 18px;
+            font-weight: 700;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 8px;
+            box-shadow: 0 8px 24px rgba(26, 58, 92, 0.25);
+            letter-spacing: 0.5px;
+            overflow: hidden;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(26, 58, 92, 0.35);
+            background: linear-gradient(135deg, #1f4770, #336f9e);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0px);
+            box-shadow: 0 4px 12px rgba(26, 58, 92, 0.20);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-submit .spinner {
+            display: none;
+            width: 22px;
+            height: 22px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        .btn-submit.loading .spinner {
+            display: inline-block;
+        }
+
+        .btn-submit.loading .btn-text {
+            display: none;
+        }
+
+        .btn-submit.loading .btn-icon {
+            display: none;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid transparent;
+        }
+
+        .status.show {
+            display: flex;
+        }
+
+        .status.success {
+            background: #e6f7ed;
+            border-color: #b8e6cf;
+            color: #0f5233;
+        }
+
+        .status.error {
+            background: #fde8e8;
+            border-color: #f5c2c2;
+            color: #8f2a2a;
+        }
+
+        .status.info {
+            background: #e4edf5;
+            border-color: #b8d1e6;
+            color: #1a3a5c;
+        }
+
+        .status i {
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        /* ---------- MODAL ---------- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 30, 47, 0.60);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 1000;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.96);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal {
+            background: #ffffff;
+            border-radius: 32px;
+            max-width: 420px;
+            width: 100%;
+            padding: 36px 32px 32px;
+            box-shadow: 0 32px 80px rgba(0, 0, 0, 0.30);
+            text-align: center;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal .modal-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 72px;
+            height: 72px;
+            background: #e8f0fe;
+            border-radius: 50%;
+            color: #1a3a5c;
+            font-size: 34px;
+            margin-bottom: 16px;
+        }
+
+        .modal h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0a1e2f;
+            margin-bottom: 6px;
+        }
+
+        .modal p.sub {
+            color: #5a7a94;
+            font-size: 15px;
+            margin-bottom: 24px;
+        }
+
+        .modal .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eef4f8;
+            font-size: 15px;
+        }
+
+        .modal .detail-row:last-of-type {
+            border-bottom: none;
+        }
+
+        .modal .detail-row .label {
+            color: #5a7a94;
+            font-weight: 500;
+        }
+
+        .modal .detail-row .value {
+            color: #0a1e2f;
+            font-weight: 700;
+        }
+
+        .modal .detail-row .value.phone {
+            color: #1a3a5c;
+        }
+
+        .modal .detail-row .value.amount {
+            color: #0f5233;
+            font-size: 18px;
+        }
+
+        .modal .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        .modal .modal-actions button {
+            flex: 1;
+            padding: 14px 18px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .modal .btn-cancel {
+            background: #eef4f8;
+            color: #1a3a5c;
+        }
+
+        .modal .btn-cancel:hover {
+            background: #dce6ef;
+        }
+
+        .modal .btn-confirm {
+            background: linear-gradient(135deg, #1a3a5c, #2b5f8a);
+            color: #fff;
+            box-shadow: 0 6px 16px rgba(26, 58, 92, 0.25);
+        }
+
+        .modal .btn-confirm:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(26, 58, 92, 0.35);
+        }
+
+        .modal .btn-confirm:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        @media (max-width: 520px) {
+            .card {
+                padding: 28px 20px;
+                border-radius: 24px;
+            }
+            .header h1 {
+                font-size: 24px;
+            }
+            .input-wrapper input {
+                font-size: 15px;
+                padding: 14px 14px;
+            }
+            .btn-submit {
+                font-size: 16px;
+                padding: 16px 20px;
+            }
+            .modal {
+                padding: 28px 20px 24px;
+            }
+            .modal .detail-row {
+                font-size: 14px;
+                padding: 10px 0;
+            }
+            .modal .modal-actions {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .card {
+                padding: 20px 14px;
+            }
+            .input-wrapper .prefix,
+            .input-wrapper .currency {
+                font-size: 13px;
+            }
+            .input-wrapper input {
+                font-size: 14px;
+                padding: 12px 10px;
+            }
+        }
+
+        .text-center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="header">
+            <div class="logo-icon">
+                <i class="fas fa-credit-card"></i>
+            </div>
+            <h1>Bomayangu</h1>
+            <p>Secure payment with PayHero</p>
+        </div>
+
+        <form id="paymentForm" novalidate>
+            <div class="form-group">
+                <label for="phoneInput">
+                    <i class="fas fa-phone-alt"></i> Phone Number
+                </label>
+                <div class="input-wrapper">
+                    <span class="prefix">+254</span>
+                    <input
+                    type="tel"
+                    id="phoneInput"
+                    placeholder="712 345 678"
+                    maxlength="15"
+                    autocomplete="tel"
+                    required
+                    />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="amountInput">
+                    <i class="fas fa-coins"></i> Amount (KES)
+                </label>
+                <div class="input-wrapper">
+                    <input
+                    type="number"
+                    id="amountInput"
+                    placeholder="0.00"
+                    min="1"
+                    step="0.01"
+                    autocomplete="off"
+                    required
+                    />
+                    <span class="currency">KES</span>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">
+                <span class="btn-icon"><i class="fas fa-paper-plane"></i></span>
+                <span class="btn-text">Pay Now</span>
+                <span class="spinner"></span>
+            </button>
+        </form>
+
+        <div class="status" id="statusMessage">
+            <i class="fas fa-circle-check"></i>
+            <span id="statusText">Success</span>
+        </div>
+
+        <p style="margin-top:18px; font-size:13px; color:#9ab0c4; text-align:center;">
+            <i class="fas fa-lock" style="margin-right:6px;"></i>
+            Secured &bull; You'll receive a prompt on your phone
+        </p>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal">
+            <div class="modal-icon">
+                <i class="fas fa-receipt"></i>
+            </div>
+            <h2>Confirm Payment</h2>
+            <p class="sub">Please verify the details below before continuing</p>
+
+            <div class="detail-row">
+                <span class="label"><i class="fas fa-phone-alt" style="margin-right:8px;"></i>Phone</span>
+                <span class="value phone" id="modalPhone">—</span>
+            </div>
+            <div class="detail-row">
+                <span class="label"><i class="fas fa-coins" style="margin-right:8px;"></i>Amount</span>
+                <span class="value amount" id="modalAmount">—</span>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-cancel" id="modalCancel">Cancel</button>
+                <button class="btn-confirm" id="modalConfirm">
+                    <i class="fas fa-check" style="margin-right:8px;"></i> Confirm &amp; Pay
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // ---------- CONFIGURATION ----------
+            // 👇 UPDATE THIS URL TO MATCH YOUR BACKEND DEPLOYMENT
+            const API_BASE = 'https://api.bomayangu.site'; // your backend domain
+            const INITIATE_URL = API_BASE + '/api/payments/initiate';
+
+            // DOM refs
+            const form = document.getElementById('paymentForm');
+            const phoneInput = document.getElementById('phoneInput');
+            const amountInput = document.getElementById('amountInput');
+            const submitBtn = document.getElementById('submitBtn');
+            const statusEl = document.getElementById('statusMessage');
+            const statusText = document.getElementById('statusText');
+
+            const modalOverlay = document.getElementById('confirmModal');
+            const modalPhone = document.getElementById('modalPhone');
+            const modalAmount = document.getElementById('modalAmount');
+            const modalCancel = document.getElementById('modalCancel');
+            const modalConfirm = document.getElementById('modalConfirm');
+
+            // ---------- Helpers ----------
+            function formatPhone(raw) {
+                const cleaned = raw.replace(/\D/g, '');
+                let normalized = cleaned.startsWith('254') ? cleaned : '254' + cleaned;
+                const display = '+' + normalized.slice(0, 3) + ' ' +
+                    normalized.slice(3).match(/.{1,3}/g)?.join(' ') || '';
+                return { raw: normalized, display };
+            }
+
+            function formatCurrency(amount) {
+                const num = parseFloat(amount);
+                return isNaN(num) || num < 0 ? '0.00' : num.toFixed(2);
+            }
+
+            function showStatus(message, type) {
+                statusEl.className = 'status show ' + type;
+                statusText.textContent = message;
+                const icon = statusEl.querySelector('i');
+                const icons = {
+                    success: 'fa-circle-check',
+                    error: 'fa-circle-exclamation',
+                    info: 'fa-circle-info'
+                };
+                icon.className = 'fas ' + (icons[type] || 'fa-circle-info');
+            }
+
+            function hideStatus() {
+                statusEl.className = 'status';
+            }
+
+            function setLoading(loading) {
+                submitBtn.classList.toggle('loading', loading);
+                submitBtn.disabled = loading;
+            }
+
+            // ---------- Validation ----------
+            function validatePhone(raw) {
+                const digits = raw.replace(/\D/g, '');
+                return digits.length >= 9 && digits.length <= 12;
+            }
+
+            function validateAmount(val) {
+                const num = parseFloat(val);
+                return !isNaN(num) && num > 0 && num <= 9999999.99;
+            }
+
+            // ---------- Submit ----------
+            async function handleSubmit(e) {
+                e.preventDefault();
+                hideStatus();
+
+                const rawPhone = phoneInput.value.trim();
+                const rawAmount = amountInput.value.trim();
+
+                if (!rawPhone || !validatePhone(rawPhone)) {
+                    showStatus('Please enter a valid Safaricom phone number (e.g., 712345678).', 'error');
+                    phoneInput.focus();
+                    return;
+                }
+                if (!rawAmount || !validateAmount(rawAmount)) {
+                    showStatus('Please enter a valid amount greater than 0.', 'error');
+                    amountInput.focus();
+                    return;
+                }
+
+                const phoneInfo = formatPhone(rawPhone);
+                const formattedAmount = formatCurrency(rawAmount);
+
+                // Show modal
+                modalPhone.textContent = phoneInfo.display;
+                modalAmount.textContent = 'KES ' + formattedAmount;
+                modalConfirm._phoneRaw = phoneInfo.raw;
+                modalConfirm._amount = formattedAmount;
+                modalOverlay.classList.add('active');
+            }
+
+            // ---------- Modal actions ----------
+            async function onModalConfirm() {
+                const phone = modalConfirm._phoneRaw;
+                const amount = modalConfirm._amount;
+
+                modalOverlay.classList.remove('active');
+                setLoading(true);
+                hideStatus();
+                showStatus('Initiating payment…', 'info');
+
+                try {
+                    const payload = { phone, amount };
+                    const response = await fetch(INITIATE_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload),
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.message || `Server error (${response.status})`);
+                    }
+
+                    showStatus(
+                        `✅ Payment initiated! Reference: ${data.data?.reference || 'N/A'}`,
+                        'success'
+                    );
+                    phoneInput.value = '';
+                    amountInput.value = '';
+                } catch (err) {
+                    showStatus(`❌ ${err.message || 'Payment failed. Please try again.'}`, 'error');
+                } finally {
+                    setLoading(false);
+                }
+            }
+
+            function onModalCancel() {
+                modalOverlay.classList.remove('active');
+                hideStatus();
+                phoneInput.focus();
+            }
+
+            // ---------- Event listeners ----------
+            form.addEventListener('submit', handleSubmit);
+            modalConfirm.addEventListener('click', onModalConfirm);
+            modalCancel.addEventListener('click', onModalCancel);
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target === modalOverlay) onModalCancel();
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modalOverlay.classList.contains('active')) onModalCancel();
+            });
+
+            // Input sanitization
+            phoneInput.addEventListener('input', function() {
+                this.value = this.value.replace(/\D/g, '').slice(0, 15);
+            });
+            amountInput.addEventListener('input', function() {
+                let val = this.value.replace(/[^0-9.]/g, '');
+                const parts = val.split('.');
+                if (parts.length > 2) val = parts[0] + '.' + parts.slice(1).join('');
+                if (val.startsWith('0') && !val.startsWith('0.')) val = val.replace(/^0+/, '');
+                this.value = val;
+            });
+
+            hideStatus();
+            phoneInput.focus();
+        })();
+    </script>
+
+</body>
+</html>
