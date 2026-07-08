@@ -777,6 +777,41 @@
             amountInput.focus();
         })();
     </script>
+<script>
+    // Disable right-click
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        return false;
+    });
 
+    // Disable keyboard shortcuts for DevTools
+    document.addEventListener('keydown', function(e) {
+        // F12
+        if (e.key === 'F12') {
+            e.preventDefault();
+            return false;
+        }
+        // Ctrl+Shift+I (Windows/Linux) or Cmd+Option+I (Mac)
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'I' || e.key === 'i')) {
+            e.preventDefault();
+            return false;
+        }
+        // Ctrl+Shift+J (Windows/Linux) or Cmd+Option+J (Mac)
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'J' || e.key === 'j')) {
+            e.preventDefault();
+            return false;
+        }
+        // Ctrl+U (View source)
+        if ((e.ctrlKey || e.metaKey) && (e.key === 'U' || e.key === 'u')) {
+            e.preventDefault();
+            return false;
+        }
+        // Ctrl+Shift+C (Inspect element)
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'C' || e.key === 'c')) {
+            e.preventDefault();
+            return false;
+        }
+    });
+</script>
 </body>
 </html>
