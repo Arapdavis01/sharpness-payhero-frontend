@@ -1,6 +1,6 @@
 /* =========================================================
    Eagle Master - Payment Page
-   Reads config from window.RUNTIME_CONFIG (defined in index.html)
+   Phase 4A: live status polling
    ========================================================= */
 
 (function () {
@@ -17,6 +17,7 @@
 
     const INITIATE_URL = API_BASE + '/api/payments/initiate';
     const CALLBACK_URL = API_BASE + '/api/payments/callback';
+    const STATUS_URL = API_BASE + '/api/payments/status/';
     const SUCCESS_URL = window.location.origin + window.location.pathname + '?status=success';
     const FAIL_URL = window.location.origin + window.location.pathname + '?status=fail';
 
@@ -35,6 +36,12 @@
     const modalProvider = document.getElementById('modalProvider');
     const modalCancel = document.getElementById('modalCancel');
     const modalConfirm = document.getElementById('modalConfirm');
+
+    // ---------- Polling state ----------
+    let pollTimer = null;
+    let pollAttempts = 0;
+    const POLL_INTERVAL_MS = 3000;
+    const POLL_MAX_ATTEMPTS = 60;
 
     // ---------- Helpers ----------
     function showStatus(message, type) {
@@ -97,6 +104,87 @@
         return { phone: rawPhone, amount: rawAmount };
     }
 
+    // ---------- Status polling ----------
+    function stopPolling() {
+        if (pollTimer) {
+            clearTimeout(pollTimer);
+            pollTimer = null;
+        }
+    }
+
+    async function pollPaymentStatus(reference) {
+        try {
+            const res = await fetch(STATUS_URL + encodeURIComponent(reference));
+            const text = await res.text();
+            let payload;
+            try { payload = JSON.parse(text); }
+            catch { payload = { message: text }; }
+
+            if (!res.ok || !payload.success) {
+                throw new Error(payload.message || 'Status check failed');
+            }
+
+            const status = payload.data.status;
+            const amount = payload.data.amount;
+
+            if (status === 'success') {
+                stopPolling();
+                showStatus(
+                    'Payment successful. Reference: ' + reference +
+                    ' \u2022 Amount: KES ' + formatCurrency(amount),
+                    'success'
+                );
+                phoneInput.value = '';
+                amountInput.value = '';
+                nameInput.value = '';
+                setLoading(stkBtn, false);
+                return;
+            }
+
+            if (status === 'failed' || status === 'cancelled') {
+                stopPolling();
+                showStatus(
+                    'Payment ' + status + '. Reference: ' + reference + '. Please try again.',
+                    'error'
+                );
+                setLoading(stkBtn, false);
+                return;
+            }
+
+            pollAttempts += 1;
+            if (pollAttempts >= POLL_MAX_ATTEMPTS) {
+                stopPolling();
+                showStatus(
+                    'Still waiting for confirmation. Reference: ' + reference +
+                    '. If money was deducted, please contact support.',
+                    'info'
+                );
+                setLoading(stkBtn, false);
+                return;
+            }
+
+            showStatus(
+                'Waiting for you to enter your M-Pesa PIN... (checking again in 3s)',
+                'info'
+            );
+            pollTimer = setTimeout(() => pollPaymentStatus(reference), POLL_INTERVAL_MS);
+        } catch (err) {
+            console.error('Poll error:', err);
+            pollAttempts += 1;
+            if (pollAttempts >= POLL_MAX_ATTEMPTS) {
+                stopPolling();
+                showStatus(
+                    'Could not confirm payment. Reference: ' + reference +
+                    '. Please check your M-Pesa messages.',
+                    'error'
+                );
+                setLoading(stkBtn, false);
+                return;
+            }
+            pollTimer = setTimeout(() => pollPaymentStatus(reference), POLL_INTERVAL_MS);
+        }
+    }
+
     // ---------- STK Push flow ----------
     stkBtn.addEventListener('click', function (e) {
         e.preventDefault();
@@ -130,7 +218,7 @@
         modalOverlay.classList.remove('active');
         setLoading(stkBtn, true);
         hideStatus();
-        showStatus('Initiating payment. Please check your phone for the STK prompt.', 'info');
+        showStatus('Initiating payment. Please wait...', 'info');
 
         try {
             const response = await fetch(INITIATE_URL, {
@@ -149,15 +237,17 @@
             }
 
             const reference = payload.data?.reference || payload.data?.external_reference || 'N/A';
-            showStatus('Payment initiated. Reference: ' + reference, 'success');
 
-            phoneInput.value = '';
-            amountInput.value = '';
-            nameInput.value = '';
+            showStatus(
+                'Check your phone and enter your M-Pesa PIN. Reference: ' + reference,
+                'info'
+            );
+            pollAttempts = 0;
+            stopPolling();
+            pollTimer = setTimeout(() => pollPaymentStatus(reference), POLL_INTERVAL_MS);
         } catch (err) {
             console.error('STK error:', err);
             showStatus(err.message || 'Payment failed. Please try again.', 'error');
-        } finally {
             setLoading(stkBtn, false);
         }
     });
@@ -240,4 +330,7 @@
 
     // ---------- Initial focus ----------
     amountInput.focus();
+
+    // ---------- Clean up polling on page unload ----------
+    window.addEventListener('beforeunload', stopPolling);
 })();
