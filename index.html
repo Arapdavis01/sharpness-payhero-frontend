@@ -3,453 +3,35 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Eagle Master – Pay with PayHero</title>
+    <title>Eagle Master - Secure Payment</title>
 
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
-
-    <!-- Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-    <style>
-        /* ---------- RESET & BASE ---------- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Inter', 'Segoe UI', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            background: radial-gradient(circle at 10% 30%, #0a1a2f, #0d2847);
-            background-attachment: fixed;
-            position: relative;
-            overflow-x: hidden;
-        }
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background: radial-gradient(2px 2px at 20% 30%, rgba(255, 215, 0, 0.15), transparent),
-                        radial-gradient(2px 2px at 40% 70%, rgba(255, 215, 0, 0.10), transparent),
-                        radial-gradient(2px 2px at 80% 20%, rgba(255, 215, 0, 0.12), transparent);
-            background-size: 200px 200px;
-            opacity: 0.6;
-            pointer-events: none;
-            z-index: 0;
-        }
+    <link rel="stylesheet" href="./css/base.css" />
+    <link rel="stylesheet" href="./css/payment.css" />
 
-        /* ---------- CARD (Glass-morphism) ---------- */
-        .card {
-            position: relative;
-            z-index: 1;
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border-radius: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 215, 0, 0.05) inset;
-            max-width: 500px;
-            width: 100%;
-            padding: 48px 40px;
-            transition: transform 0.3s ease, box-shadow 0.4s ease;
-        }
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 40px 90px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 215, 0, 0.1) inset;
-        }
-
-        /* ---------- HEADER ---------- */
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        .header .logo-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #f6b026, #d48b1c);
-            border-radius: 50%;
-            color: #0a1a2f;
-            font-size: 40px;
-            margin-bottom: 18px;
-            box-shadow: 0 12px 30px rgba(246, 176, 38, 0.3);
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
-        }
-        .header .logo-icon:hover {
-            transform: scale(1.05) rotate(-5deg);
-            box-shadow: 0 16px 40px rgba(246, 176, 38, 0.5);
-        }
-        .header h1 {
-            font-size: 32px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            background: linear-gradient(to right, #f6b026, #f9d976);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 2px 10px rgba(246, 176, 38, 0.2);
-        }
-        .header p {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 15px;
-            font-weight: 400;
-            margin-top: 6px;
-            letter-spacing: 0.3px;
-        }
-
-        /* ---------- FORM FIELDS ---------- */
-        .form-group {
-            margin-bottom: 24px;
-        }
-        .form-group label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 8px;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-        .form-group label i {
-            margin-right: 10px;
-            color: #f6b026;
-            width: 20px;
-            text-align: center;
-        }
-        .input-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.06);
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
-        }
-        .input-wrapper:focus-within {
-            border-color: #f6b026;
-            background: rgba(255, 255, 255, 0.10);
-            box-shadow: 0 0 0 4px rgba(246, 176, 38, 0.15);
-        }
-        .input-wrapper .prefix {
-            padding: 0 0 0 18px;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 15px;
-            white-space: nowrap;
-            background: transparent;
-            border: none;
-            pointer-events: none;
-        }
-        .input-wrapper input {
-            width: 100%;
-            padding: 16px 18px;
-            font-size: 16px;
-            font-weight: 500;
-            color: #ffffff;
-            background: transparent;
-            border: none;
-            outline: none;
-            font-family: inherit;
-        }
-        .input-wrapper input::placeholder {
-            color: rgba(255, 255, 255, 0.35);
-            font-weight: 400;
-        }
-        .input-wrapper input[type="number"]::-webkit-inner-spin-button,
-        .input-wrapper input[type="number"]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        .input-wrapper input[type="number"] {
-            -moz-appearance: textfield;
-        }
-        .input-wrapper .currency {
-            padding: 0 18px 0 0;
-            font-weight: 700;
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 16px;
-            background: transparent;
-            border: none;
-            pointer-events: none;
-        }
-
-        /* ---------- TWO BUTTONS ROW ---------- */
-        .button-row {
-            display: flex;
-            gap: 12px;
-            margin-top: 12px;
-        }
-        .btn-pay {
-            flex: 1;
-            position: relative;
-            padding: 16px 12px;
-            font-size: 16px;
-            font-weight: 700;
-            border: none;
-            border-radius: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            overflow: hidden;
-            z-index: 1;
-            font-family: inherit;
-            text-decoration: none;
-            color: #0a1a2f;
-            background: linear-gradient(135deg, #f6b026, #d48b1c);
-            box-shadow: 0 8px 30px rgba(246, 176, 38, 0.3);
-        }
-        .btn-pay::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 16px;
-            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-            transform: translateX(-100%);
-            transition: transform 0.6s ease;
-            z-index: 0;
-        }
-        .btn-pay:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 40px rgba(246, 176, 38, 0.45);
-        }
-        .btn-pay:hover::before {
-            transform: translateX(100%);
-        }
-        .btn-pay:active {
-            transform: translateY(0px);
-            box-shadow: 0 4px 20px rgba(246, 176, 38, 0.25);
-        }
-        .btn-pay .btn-icon,
-        .btn-pay .btn-text {
-            position: relative;
-            z-index: 1;
-        }
-        .btn-pay.card-btn {
-            background: linear-gradient(135deg, #e0e0e0, #b0b0b0);
-            box-shadow: 0 8px 30px rgba(200, 200, 200, 0.3);
-            color: #0a1a2f;
-        }
-        .btn-pay.card-btn:hover {
-            box-shadow: 0 12px 40px rgba(200, 200, 200, 0.45);
-        }
-        .btn-pay .spinner {
-            display: none;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(10, 26, 47, 0.2);
-            border-top-color: #0a1a2f;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            position: relative;
-            z-index: 1;
-        }
-        .btn-pay.loading .spinner {
-            display: inline-block;
-        }
-        .btn-pay.loading .btn-text {
-            display: none;
-        }
-        .btn-pay.loading .btn-icon {
-            display: none;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* ---------- STATUS ---------- */
-        .status {
-            margin-top: 24px;
-            padding: 14px 18px;
-            border-radius: 14px;
-            font-size: 14px;
-            font-weight: 500;
-            display: none;
-            align-items: center;
-            gap: 12px;
-            border: 1px solid transparent;
-            background: rgba(255, 255, 255, 0.06);
-            backdrop-filter: blur(10px);
-        }
-        .status.show { display: flex; }
-        .status.success { border-color: #4caf50; color: #b9f6ca; background: rgba(76, 175, 80, 0.15); }
-        .status.error { border-color: #ef5350; color: #ffcdd2; background: rgba(239, 83, 80, 0.15); }
-        .status.info { border-color: #42a5f5; color: #bbdefb; background: rgba(66, 165, 245, 0.15); }
-        .status i { font-size: 18px; flex-shrink: 0; }
-
-        .footer-text {
-            margin-top: 20px;
-            font-size: 13px;
-            color: rgba(255, 255, 255, 0.35);
-            text-align: center;
-            letter-spacing: 0.3px;
-        }
-        .footer-text i { margin-right: 6px; color: rgba(255, 255, 255, 0.25); }
-
-        /* ---------- MODAL (for STK confirmation) ---------- */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            z-index: 1000;
-            animation: fadeIn 0.3s ease;
-        }
-        .modal-overlay.active { display: flex; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.96); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        .modal {
-            background: rgba(255, 255, 255, 0.06);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            border-radius: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            max-width: 440px;
-            width: 100%;
-            padding: 40px 36px 36px;
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
-            text-align: center;
-            animation: slideUp 0.35s ease;
-        }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px) scale(0.96); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        .modal .modal-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 72px;
-            height: 72px;
-            background: rgba(246, 176, 38, 0.12);
-            border-radius: 50%;
-            color: #f6b026;
-            font-size: 34px;
-            margin-bottom: 16px;
-            border: 1px solid rgba(246, 176, 38, 0.15);
-        }
-        .modal h2 {
-            font-size: 24px;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 4px;
-        }
-        .modal p.sub {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 15px;
-            margin-bottom: 28px;
-        }
-        .modal .detail-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 14px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-            font-size: 15px;
-        }
-        .modal .detail-row:last-of-type { border-bottom: none; }
-        .modal .detail-row .label {
-            color: rgba(255, 255, 255, 0.5);
-            font-weight: 500;
-        }
-        .modal .detail-row .value {
-            color: #ffffff;
-            font-weight: 600;
-        }
-        .modal .detail-row .value.phone { color: #f6b026; }
-        .modal .detail-row .value.amount { color: #f6b026; font-size: 18px; }
-        .modal .detail-row .value.provider { color: #81d4fa; }
-        .modal .modal-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 32px;
-        }
-        .modal .modal-actions button {
-            flex: 1;
-            padding: 14px 18px;
-            font-size: 16px;
-            font-weight: 600;
-            border: none;
-            border-radius: 14px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-family: inherit;
-        }
-        .modal .btn-cancel {
-            background: rgba(255, 255, 255, 0.06);
-            color: rgba(255, 255, 255, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        .modal .btn-cancel:hover {
-            background: rgba(255, 255, 255, 0.10);
-            color: #fff;
-        }
-        .modal .btn-confirm {
-            background: linear-gradient(135deg, #f6b026, #d48b1c);
-            color: #0a1a2f;
-            box-shadow: 0 6px 24px rgba(246, 176, 38, 0.3);
-        }
-        .modal .btn-confirm:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 32px rgba(246, 176, 38, 0.45);
-        }
-        .modal .btn-confirm:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none !important;
-            box-shadow: none !important;
-        }
-
-        @media (max-width: 520px) {
-            .card { padding: 32px 24px; border-radius: 28px; }
-            .header h1 { font-size: 26px; }
-            .header .logo-icon { width: 64px; height: 64px; font-size: 32px; }
-            .input-wrapper input { font-size: 15px; padding: 14px 16px; }
-            .btn-pay { font-size: 15px; padding: 14px 12px; }
-            .button-row { flex-direction: column; }
-            .modal { padding: 28px 20px 24px; }
-            .modal .detail-row { font-size: 14px; padding: 12px 0; }
-            .modal .modal-actions { flex-direction: column; }
-        }
-        @media (max-width: 380px) {
-            .card { padding: 24px 16px; border-radius: 24px; }
-            .input-wrapper .prefix,
-            .input-wrapper .currency { font-size: 13px; }
-            .input-wrapper input { font-size: 14px; padding: 12px 14px; }
-        }
-    </style>
+    <script>
+        window.RUNTIME_CONFIG = {
+            API_BASE: 'https://sharpness-payhero-backend.onrender.com',
+            CHANNEL_ID: '9929'
+        };
+    </script>
 </head>
 <body>
 
-    <div class="card">
-        <div class="header">
+    <main class="card">
+        <header class="header">
             <div class="logo-icon">
                 <i class="fas fa-dove"></i>
             </div>
             <h1>Eagle Master</h1>
             <p>Choose your payment method</p>
-        </div>
+        </header>
 
-        <!-- Main Form -->
         <form id="paymentForm" novalidate>
-            <!-- Common fields -->
             <div class="form-group">
                 <label for="phoneInput">
                     <i class="fas fa-phone-alt"></i> Phone Number
@@ -457,12 +39,12 @@
                 <div class="input-wrapper">
                     <span class="prefix">+254</span>
                     <input
-                    type="tel"
-                    id="phoneInput"
-                    placeholder="712 345 678"
-                    maxlength="15"
-                    autocomplete="tel"
-                    required
+                        type="tel"
+                        id="phoneInput"
+                        placeholder="712 345 678"
+                        maxlength="15"
+                        autocomplete="tel"
+                        required
                     />
                 </div>
             </div>
@@ -473,13 +55,13 @@
                 </label>
                 <div class="input-wrapper">
                     <input
-                    type="number"
-                    id="amountInput"
-                    placeholder="0.00"
-                    min="1"
-                    step="0.01"
-                    autocomplete="off"
-                    required
+                        type="number"
+                        id="amountInput"
+                        placeholder="0.00"
+                        min="1"
+                        step="0.01"
+                        autocomplete="off"
+                        required
                     />
                     <span class="currency">KES</span>
                 </div>
@@ -491,24 +73,21 @@
                 </label>
                 <div class="input-wrapper">
                     <input
-                    type="text"
-                    id="nameInput"
-                    placeholder="Jane Doe"
-                    autocomplete="name"
+                        type="text"
+                        id="nameInput"
+                        placeholder="Jane Doe"
+                        autocomplete="name"
                     />
                 </div>
             </div>
 
-            <!-- Two buttons row -->
             <div class="button-row">
-                <!-- STK Push Button -->
                 <button type="button" class="btn-pay" id="stkBtn">
                     <span class="btn-icon"><i class="fas fa-mobile-alt"></i></span>
-                    <span class="btn-text">M‑Pesa / Airtel</span>
+                    <span class="btn-text">M-Pesa / Airtel</span>
                     <span class="spinner"></span>
                 </button>
 
-                <!-- Card Button -->
                 <button type="button" class="btn-pay card-btn" id="cardBtn">
                     <span class="btn-icon"><i class="fas fa-credit-card"></i></span>
                     <span class="btn-text">Pay with Card</span>
@@ -518,16 +97,15 @@
         </form>
 
         <div class="status" id="statusMessage">
-            <i class="fas fa-circle-check"></i>
-            <span id="statusText">Success</span>
+            <i class="fas fa-circle-info"></i>
+            <span id="statusText">Fill in the details and choose a payment method.</span>
         </div>
 
         <p class="footer-text">
             <i class="fas fa-lock"></i> Secured by PayHero &bull; Visa / Mastercard &amp; Mobile Money
         </p>
-    </div>
+    </main>
 
-    <!-- Confirmation Modal (for STK only) -->
     <div class="modal-overlay" id="confirmModal">
         <div class="modal">
             <div class="modal-icon">
@@ -537,281 +115,27 @@
             <p class="sub">Please verify the details below before continuing</p>
 
             <div class="detail-row">
-                <span class="label"><i class="fas fa-phone-alt" style="margin-right:8px;"></i>Phone</span>
-                <span class="value phone" id="modalPhone">—</span>
+                <span class="label"><i class="fas fa-phone-alt"></i> Phone</span>
+                <span class="value phone" id="modalPhone">&mdash;</span>
             </div>
             <div class="detail-row">
-                <span class="label"><i class="fas fa-coins" style="margin-right:8px;"></i>Amount</span>
-                <span class="value amount" id="modalAmount">—</span>
+                <span class="label"><i class="fas fa-coins"></i> Amount</span>
+                <span class="value amount" id="modalAmount">&mdash;</span>
             </div>
             <div class="detail-row">
-                <span class="label"><i class="fas fa-wifi" style="margin-right:8px;"></i>Network</span>
-                <span class="value provider" id="modalProvider">—</span>
+                <span class="label"><i class="fas fa-wifi"></i> Network</span>
+                <span class="value provider" id="modalProvider">&mdash;</span>
             </div>
 
             <div class="modal-actions">
-                <button class="btn-cancel" id="modalCancel">Cancel</button>
-                <button class="btn-confirm" id="modalConfirm">
-                    <i class="fas fa-check" style="margin-right:8px;"></i> Confirm &amp; Pay
+                <button class="btn-cancel" id="modalCancel" type="button">Cancel</button>
+                <button class="btn-confirm" id="modalConfirm" type="button">
+                    <i class="fas fa-check"></i> Confirm &amp; Pay
                 </button>
             </div>
         </div>
     </div>
 
-    <script>
-        (function() {
-            'use strict';
-
-            // ---------- CONFIGURATION ----------
-            const CHANNEL_ID = '9929';
-            const API_BASE = 'https://sharpness-payhero-backend.onrender.com';
-            const INITIATE_URL = API_BASE + '/api/payments/initiate';
-            const CALLBACK_URL = 'https://sharpness-payhero-backend.onrender.com/api/payments/callback';
-            const SUCCESS_URL = window.location.origin + window.location.pathname + '?status=success';
-            const FAIL_URL = window.location.origin + window.location.pathname + '?status=fail';
-
-            // DOM refs
-            const phoneInput = document.getElementById('phoneInput');
-            const amountInput = document.getElementById('amountInput');
-            const nameInput = document.getElementById('nameInput');
-            const stkBtn = document.getElementById('stkBtn');
-            const cardBtn = document.getElementById('cardBtn');
-            const statusEl = document.getElementById('statusMessage');
-            const statusText = document.getElementById('statusText');
-
-            // Modal refs
-            const modalOverlay = document.getElementById('confirmModal');
-            const modalPhone = document.getElementById('modalPhone');
-            const modalAmount = document.getElementById('modalAmount');
-            const modalProvider = document.getElementById('modalProvider');
-            const modalCancel = document.getElementById('modalCancel');
-            const modalConfirm = document.getElementById('modalConfirm');
-
-            // ---------- Helpers ----------
-            function showStatus(message, type) {
-                statusEl.className = 'status show ' + type;
-                statusText.textContent = message;
-                const icon = statusEl.querySelector('i');
-                const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', info: 'fa-circle-info' };
-                icon.className = 'fas ' + (icons[type] || 'fa-circle-info');
-            }
-
-            function hideStatus() {
-                statusEl.className = 'status';
-            }
-
-            function formatPhone(raw) {
-                const cleaned = raw.replace(/\D/g, '');
-                let normalized = cleaned.startsWith('254') ? cleaned : '254' + cleaned;
-                const display = '+' + normalized.slice(0, 3) + ' ' +
-                    normalized.slice(3).match(/.{1,3}/g)?.join(' ') || '';
-                return { raw: normalized, display };
-            }
-
-            function formatCurrency(amount) {
-                const num = parseFloat(amount);
-                return isNaN(num) || num < 0 ? '0.00' : num.toFixed(2);
-            }
-
-            function generateReference() {
-                return 'EM-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
-            }
-
-            function setLoading(btn, loading) {
-                btn.classList.toggle('loading', loading);
-                btn.disabled = loading;
-            }
-
-            function validateInputs() {
-                const rawPhone = phoneInput.value.trim();
-                const rawAmount = amountInput.value.trim();
-                const phoneDigits = rawPhone.replace(/\D/g, '');
-                const amountNum = parseFloat(rawAmount);
-
-                if (phoneDigits.length < 9 || phoneDigits.length > 12) {
-                    showStatus('Please enter a valid phone number (e.g., 712345678).', 'error');
-                    phoneInput.focus();
-                    return null;
-                }
-                if (isNaN(amountNum) || amountNum <= 0) {
-                    showStatus('Please enter a valid amount greater than 0.', 'error');
-                    amountInput.focus();
-                    return null;
-                }
-                return { phone: rawPhone, amount: rawAmount };
-            }
-
-            // ---------- STK Push flow ----------
-            stkBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                hideStatus();
-
-                const data = validateInputs();
-                if (!data) return;
-
-                const phoneInfo = formatPhone(data.phone);
-                const formattedAmount = formatCurrency(data.amount);
-
-                // Show confirmation modal
-                modalPhone.textContent = phoneInfo.display;
-                modalAmount.textContent = 'KES ' + formattedAmount;
-                modalProvider.textContent = 'M‑Pesa / Airtel (STK)';
-                modalConfirm._phoneRaw = phoneInfo.raw;
-                modalConfirm._amount = formattedAmount;
-                modalConfirm._provider = 'm-pesa'; // default, user can change if needed
-                modalOverlay.classList.add('active');
-            });
-
-            // Confirm STK payment
-            modalConfirm.addEventListener('click', async function() {
-                const phone = modalConfirm._phoneRaw;
-                const amount = modalConfirm._amount;
-                const provider = modalConfirm._provider || 'm-pesa';
-
-                modalOverlay.classList.remove('active');
-                setLoading(stkBtn, true);
-                hideStatus();
-                showStatus('Initiating payment…', 'info');
-
-                try {
-                    const payload = { phone, amount, provider };
-                    const response = await fetch(INITIATE_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload),
-                    });
-
-                    let data;
-                    const text = await response.text();
-                    try { data = JSON.parse(text); } catch (e) { data = { message: text || 'Unknown error' }; }
-
-                    if (!response.ok) {
-                        const errorMsg = data.message || `HTTP ${response.status}`;
-                        throw new Error(errorMsg);
-                    }
-
-                    showStatus(`✅ Payment initiated! Reference: ${data.data?.reference || 'N/A'}`, 'success');
-                    phoneInput.value = '';
-                    amountInput.value = '';
-                    nameInput.value = '';
-                } catch (err) {
-                    console.error('STK error:', err);
-                    showStatus(`❌ ${err.message || 'Payment failed. Please try again.'}`, 'error');
-                } finally {
-                    setLoading(stkBtn, false);
-                }
-            });
-
-            // ---------- Card flow ----------
-            cardBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                hideStatus();
-
-                const data = validateInputs();
-                if (!data) return;
-
-                const phoneInfo = formatPhone(data.phone);
-                const amountNum = parseFloat(data.amount);
-                const name = nameInput.value.trim() || 'Customer';
-
-                // Build PayHero checkout URL
-                const baseUrl = 'https://payhero.co.ke/checkout'; // verify this is correct
-                const params = new URLSearchParams({
-                    channel_id: CHANNEL_ID,
-                    amount: amountNum.toFixed(2),
-                    phone: phoneInfo.raw,
-                    name: name,
-                    reference: generateReference(),
-                    success_url: SUCCESS_URL,
-                    fail_url: FAIL_URL,
-                    callback_url: CALLBACK_URL,
-                });
-                const checkoutUrl = baseUrl + '?' + params.toString();
-
-                // Open in new tab
-                window.open(checkoutUrl, '_blank');
-                showStatus('Redirecting to secure card payment…', 'info');
-            });
-
-            // ---------- Modal cancel ----------
-            modalCancel.addEventListener('click', function() {
-                modalOverlay.classList.remove('active');
-                hideStatus();
-            });
-            modalOverlay.addEventListener('click', function(e) {
-                if (e.target === modalOverlay) modalCancel.click();
-            });
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && modalOverlay.classList.contains('active')) modalCancel.click();
-            });
-
-            // ---------- Handle success/fail from URL ----------
-            const urlParams = new URLSearchParams(window.location.search);
-            const statusParam = urlParams.get('status');
-            const refParam = urlParams.get('reference');
-
-            if (statusParam === 'success' && refParam) {
-                showStatus(`✅ Payment successful! Reference: ${refParam}`, 'success');
-                window.history.replaceState({}, document.title, window.location.pathname);
-            } else if (statusParam === 'fail') {
-                showStatus('❌ Payment failed or cancelled. Please try again.', 'error');
-                window.history.replaceState({}, document.title, window.location.pathname);
-            } else {
-                // Initial state
-                showStatus('Fill in the details and choose a payment method.', 'info');
-            }
-
-            // ---------- Input sanitization ----------
-            phoneInput.addEventListener('input', function() {
-                this.value = this.value.replace(/\D/g, '').slice(0, 15);
-            });
-            amountInput.addEventListener('input', function() {
-                let val = this.value.replace(/[^0-9.]/g, '');
-                const parts = val.split('.');
-                if (parts.length > 2) val = parts[0] + '.' + parts.slice(1).join('');
-                if (val.startsWith('0') && !val.startsWith('0.')) val = val.replace(/^0+/, '');
-                this.value = val;
-            });
-
-            // Auto focus
-            amountInput.focus();
-        })();
-    </script>
-<script>
-    // Disable right-click
-    document.addEventListener('contextmenu', function(e) {
-        e.preventDefault();
-        return false;
-    });
-
-    // Disable keyboard shortcuts for DevTools
-    document.addEventListener('keydown', function(e) {
-        // F12
-        if (e.key === 'F12') {
-            e.preventDefault();
-            return false;
-        }
-        // Ctrl+Shift+I (Windows/Linux) or Cmd+Option+I (Mac)
-        if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'I' || e.key === 'i')) {
-            e.preventDefault();
-            return false;
-        }
-        // Ctrl+Shift+J (Windows/Linux) or Cmd+Option+J (Mac)
-        if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'J' || e.key === 'j')) {
-            e.preventDefault();
-            return false;
-        }
-        // Ctrl+U (View source)
-        if ((e.ctrlKey || e.metaKey) && (e.key === 'U' || e.key === 'u')) {
-            e.preventDefault();
-            return false;
-        }
-        // Ctrl+Shift+C (Inspect element)
-        if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'C' || e.key === 'c')) {
-            e.preventDefault();
-            return false;
-        }
-    });
-</script>
+    <script src="./js/main.js"></script>
 </body>
 </html>
