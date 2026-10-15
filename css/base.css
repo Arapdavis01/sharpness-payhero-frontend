@@ -1,0 +1,119 @@
+/* =========================================================
+   Base Theme - shared across all frontends (payment + admin)
+   ========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', 'Segoe UI', sans-serif;
+    text-decoration: none;
+    border: none;
+    outline: none;
+}
+
+:root {
+    --bg-color: #081b29;
+    --second-bg-color: #112e42;
+    --text-color: #ededed;
+    --main-color: #39FF14;
+    --main-color-dark: #2ecc0f;
+    --border-color: rgba(57, 255, 20, 0.25);
+    --shadow-color: rgba(57, 255, 20, 0.3);
+    --transition: 0.3s ease;
+
+    --danger-color: #ef5350;
+    --info-color: #42a5f5;
+    --success-color: #39FF14;
+}
+
+html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+}
+
+body {
+    background: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: var(--main-color);
+    border-radius: 2rem;
+    box-shadow: 0 0 0.6rem var(--shadow-color);
+    font-weight: 600;
+    color: var(--bg-color);
+    transition: var(--transition);
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-family: inherit;
+}
+
+.btn:hover {
+    box-shadow: 0 0 1.2rem var(--shadow-color);
+    transform: translateY(-2px);
+    background: var(--main-color-dark);
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid var(--main-color);
+    color: var(--main-color);
+    box-shadow: none;
+}
+
+.btn-outline:hover {
+    background: var(--main-color);
+    color: var(--bg-color);
+}
+
+/* ---------- Status Messages ---------- */
+.status {
+    margin-top: 1.5rem;
+    padding: 0.9rem 1.1rem;
+    border-radius: 0.9rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    display: none;
+    align-items: center;
+    gap: 0.75rem;
+    border: 1px solid transparent;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.status.show { display: flex; }
+.status i { font-size: 1.1rem; flex-shrink: 0; }
+
+.status.success {
+    border-color: var(--success-color);
+    color: #b9f6ca;
+    background: rgba(57, 255, 20, 0.12);
+}
+
+.status.error {
+    border-color: var(--danger-color);
+    color: #ffcdd2;
+    background: rgba(239, 83, 80, 0.15);
+}
+
+.status.info {
+    border-color: var(--info-color);
+    color: #bbdefb;
+    background: rgba(66, 165, 245, 0.15);
+}
+
+/* ---------- Focus ring (accessibility) ---------- */
+:focus-visible {
+    outline: 2px solid var(--main-color);
+    outline-offset: 2px;
+}
