@@ -107,6 +107,7 @@
 
         const phoneInfo = formatPhone(data.phone);
         const formattedAmount = formatCurrency(data.amount);
+        const customerName = nameInput.value.trim();
 
         modalPhone.textContent = phoneInfo.display;
         modalAmount.textContent = 'KES ' + formattedAmount;
@@ -115,6 +116,7 @@
         modalConfirm.dataset.phone = phoneInfo.raw;
         modalConfirm.dataset.amount = formattedAmount;
         modalConfirm.dataset.provider = 'm-pesa';
+        modalConfirm.dataset.name = customerName;
 
         modalOverlay.classList.add('active');
     });
@@ -123,6 +125,7 @@
         const phone = modalConfirm.dataset.phone;
         const amount = modalConfirm.dataset.amount;
         const provider = modalConfirm.dataset.provider || 'm-pesa';
+        const name = modalConfirm.dataset.name || '';
 
         modalOverlay.classList.remove('active');
         setLoading(stkBtn, true);
@@ -133,7 +136,7 @@
             const response = await fetch(INITIATE_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phone, amount, provider })
+                body: JSON.stringify({ phone, amount, provider, name })
             });
 
             const text = await response.text();
